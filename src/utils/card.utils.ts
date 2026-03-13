@@ -1,5 +1,5 @@
 import type { BrawlerModel } from "../models/brawler.model.ts";
-import type { CardType } from "../models/card.model.ts";
+import type { CardModel } from "../models/card.model.ts";
 import { getRandomInt } from "./random.utils.ts";
 
 const MAX_STATISTIC = 10;
@@ -14,7 +14,7 @@ export const getRandomAttackDefense = (rarity: number) => {
 
 export const transformBrawlerToCard = (
     brawlers: BrawlerModel[],
-): CardType[] => {
+): CardModel[] => {
     return brawlers.map((b) => {
         return {
             id: b.id,
