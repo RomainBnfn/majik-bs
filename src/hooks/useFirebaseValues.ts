@@ -1,8 +1,11 @@
-import {useEffect, useRef, useState} from "react";
-import {getFirebaseRef} from "../services/firebase.service.ts";
-import {onValue} from "firebase/database";
+import { useEffect, useRef, useState } from "react";
+import { getFirebaseRef } from "../services/firebase.service.ts";
+import { onValue } from "firebase/database";
 
-export const useFirebaseValues = <T>(path: string, defaultValue: T = undefined as T): [T, boolean] => {
+export const useFirebaseValues = <T>(
+    path: string,
+    defaultValue: T = undefined as T,
+): [T, boolean] => {
     const [data, setData] = useState<T>(defaultValue);
     const [loading, setLoading] = useState(false);
     const initialized = useRef(false);
@@ -30,7 +33,6 @@ export const useFirebaseValues = <T>(path: string, defaultValue: T = undefined a
             active = false;
         };
     }, [path]);
-
 
     return [data, loading];
 };

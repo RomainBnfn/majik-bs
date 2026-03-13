@@ -3,12 +3,11 @@
 
     --color-text: #6b6375;
 
-
-    --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-    --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+    --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+    --heading: system-ui, "Segoe UI", Roboto, sans-serif;
     --mono: ui-monospace, Consolas, monospace;
 
-    font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+    font-family: system-ui, "Segoe UI", Roboto, sans-serif;
     font-size: 16px;
     text-rendering: optimizeLegibility;
 
@@ -19,5 +18,4 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-
 }

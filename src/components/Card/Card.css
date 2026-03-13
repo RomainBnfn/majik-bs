@@ -1,5 +1,4 @@
 .Card {
-
     --card-rarity-color: white;
     --card-background-url: "";
     --card-width: 150px;
@@ -19,9 +18,9 @@
     position: relative;
     border-radius: var(--card-border-radius);
     background: linear-gradient(
-            165deg,
-            var(--card-rarity-color) 25%,
-            #1c1c1c 70%
+        165deg,
+        var(--card-rarity-color) 25%,
+        #1c1c1c 70%
     );
 
     display: flex;

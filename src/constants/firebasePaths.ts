@@ -1,3 +1,3 @@
 export const FIREBASE_PATHS = {
-    cards: "cards"
+    cards: "cards",
 } as const;
