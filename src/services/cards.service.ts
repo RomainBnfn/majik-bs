@@ -8,6 +8,6 @@ export async function generateCardsFromBrawlers(): Promise<void> {
     const cards = transformBrawlerToCard(brawlers);
     return updateFirebaseValue(
         FIREBASE_PATHS.cards,
-        cards.reduce((o, card) => ({ ...o, [card.id]: cards }), {}),
+        cards.reduce((o, card) => ({ ...o, [card.id]: card }), {}),
     );
 }

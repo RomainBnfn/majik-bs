@@ -1,4 +1,3 @@
-
 .RoundStatistic {
     --color: white;
     --size: 30px;
@@ -22,16 +21,15 @@
     svg {
         font-size: var(--font-size);
     }
-}
+    &-attack {
+        --color: #7e0b26;
+    }
 
-.RoundStatistic-attack {
-    --color: #7e0b26;
-}
+    &-defense {
+        --color: #1d5370;
+    }
 
-.RoundStatistic-defense {
-    --color: #1d5370;
-}
-
-.RoundStatistic-rarity {
-    --color: #cc9300;
+    &-rarity {
+        --color: #cc9300;
+    }
 }

@@ -1,0 +1,10 @@
+.SortingButton {
+    &-order {
+        transition: 1s;
+        rotate: 0deg;
+
+        &-reverse {
+            rotate: 180deg;
+        }
+    }
+}

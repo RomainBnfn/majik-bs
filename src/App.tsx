@@ -5,9 +5,15 @@ import { FIREBASE_PATHS } from "./constants/firebasePaths.ts";
 import type { CardType } from "./models/card.model.ts";
 import Card from "./components/Card/Card.tsx";
 import { fromObjectToList } from "./utils/firebase.utils.ts";
-import { RadioButtonChecked, Shield, Whatshot } from "@mui/icons-material";
+import {
+    RadioButtonChecked,
+    Shield,
+    ViewCompactAlt,
+    Whatshot,
+} from "@mui/icons-material";
 import { FunctionComponent, useState } from "react";
 import SortingButton from "./components/SortingButton/SortingButton.tsx";
+import { IconButton } from "@mui/material";
 
 type Sorting = "price" | "defense" | "attack";
 const SortingIcons: Record<Sorting, FunctionComponent> = {
@@ -27,6 +33,7 @@ function App() {
         {},
     );
     const [sorting, setSorting] = useState({ type: "price", desc: false });
+    const [compact, setCompact] = useState(false);
 
     const Sorting = ({ type }: { type: Sorting }) => {
         return (
@@ -48,18 +55,29 @@ function App() {
 
     return (
         <>
-            <button
-                onClick={() => {
-                    generateCardsFromBrawlers();
-                }}
-            >
-                Generate cards
-            </button>
-            <div className={"Sort"}>
-                Sorting
-                <Sorting type={"price"} />
-                <Sorting type={"attack"} />
-                <Sorting type={"defense"} />
+            <div className={"Header"}>
+                <button
+                    onClick={() => {
+                        generateCardsFromBrawlers();
+                    }}
+                >
+                    Generate cards
+                </button>
+                <div className={"Sort"}>
+                    Sorting
+                    <Sorting type={"price"} />
+                    <Sorting type={"attack"} />
+                    <Sorting type={"defense"} />
+                </div>
+                <div>
+                    Mode
+                    <IconButton
+                        color={compact ? "primary" : undefined}
+                        onClick={() => setCompact((p) => !p)}
+                    >
+                        <ViewCompactAlt />
+                    </IconButton>
+                </div>
             </div>
             <div className={"Cards"}>
                 {[...fromObjectToList<CardType>(cards)]
@@ -70,7 +88,7 @@ function App() {
                                 b[SortingKeys[sorting.type]]),
                     )
                     .map((card) => (
-                        <Card card={card} />
+                        <Card key={card.id} card={card} compact={compact} />
                     ))}
             </div>
         </>
