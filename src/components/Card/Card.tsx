@@ -1,22 +1,29 @@
 import "./Card.scss";
-import type { CardType } from "../../models/card.model.ts";
+import type { CardModel } from "../../models/card.model.ts";
 import RoundStatistic from "../RoundStatistic/RoundStatistic.tsx";
 import { RadioButtonChecked, Shield, Whatshot } from "@mui/icons-material";
 import classNames from "classnames";
 
 export type CardProps = {
-    card: CardType;
+    card: CardModel;
     compact?: boolean;
+    active?: boolean;
+    onClick?(): void;
 };
 
-const Card = ({ card, compact }: CardProps) => {
+const Card = ({ card, compact, onClick, active }: CardProps) => {
     return (
         <div
-            className={classNames("Card", compact && "Card-compact")}
+            className={classNames(
+                "Card",
+                compact && "Card-compact",
+                active && "Card-active",
+            )}
             style={{
                 "--card-rarity-color": card.rarity.color,
                 "--card-background-url": `url(${card.image})`,
             }}
+            onClick={() => onClick?.()}
         >
             <div className={"Card-header"}>
                 <RoundStatistic

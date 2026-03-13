@@ -6,5 +6,10 @@
 }
 
 .Header {
-    display: flex;
+    &-filters {
+        display: flex;
+    }
+}
+
+.Deck {
 }

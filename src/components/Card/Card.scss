@@ -46,6 +46,10 @@
         --card-height: 110px;
     }
 
+    &-active {
+        --card-outline-color: #43b4ab;
+    }
+
     &-header {
         position: relative;
         margin-bottom: 2px;
