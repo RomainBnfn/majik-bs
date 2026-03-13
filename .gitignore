@@ -25,3 +25,4 @@ dist-ssr
 
 # Firebase real config
 assets/firebaseConfig.js
+/src/assets/firebaseConfig.ts

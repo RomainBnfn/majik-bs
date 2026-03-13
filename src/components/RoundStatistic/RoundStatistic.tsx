@@ -1,4 +1,4 @@
-import "./RoundStatistic.css";
+import "./RoundStatistic.scss";
 import type { HTMLProps } from "react";
 
 export type RoundStatisticProps = {

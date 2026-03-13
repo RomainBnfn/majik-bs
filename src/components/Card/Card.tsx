@@ -1,16 +1,18 @@
-import "./Card.css";
+import "./Card.scss";
 import type { CardType } from "../../models/card.model.ts";
 import RoundStatistic from "../RoundStatistic/RoundStatistic.tsx";
 import { RadioButtonChecked, Shield, Whatshot } from "@mui/icons-material";
+import classNames from "classnames";
 
 export type CardProps = {
     card: CardType;
+    compact?: boolean;
 };
 
-const Card = ({ card }: CardProps) => {
+const Card = ({ card, compact }: CardProps) => {
     return (
         <div
-            className={"Card"}
+            className={classNames("Card", compact && "Card-compact")}
             style={{
                 "--card-rarity-color": card.rarity.color,
                 "--card-background-url": `url(${card.image})`,

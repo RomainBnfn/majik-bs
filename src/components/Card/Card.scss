@@ -18,9 +18,9 @@
     position: relative;
     border-radius: var(--card-border-radius);
     background: linear-gradient(
-            165deg,
-            var(--card-rarity-color) 25%,
-            #1c1c1c 70%
+        165deg,
+        var(--card-rarity-color) 25%,
+        #1c1c1c 70%
     );
 
     display: flex;
@@ -34,7 +34,7 @@
     outline: var(--card-outline-width) var(--card-outline-color) solid;
     margin: var(--card-outline-width);
 
-    .Card-content {
+    &-content {
         flex: 1;
         background: no-repeat center var(--card-background-url);
         background-size: 130%;
@@ -42,7 +42,11 @@
         margin: 0 var(--card-inner-border-width);
     }
 
-    .Card-header {
+    &-compact {
+        --card-height: 110px;
+    }
+
+    &-header {
         position: relative;
         margin-bottom: 2px;
         text-align: center;
@@ -61,7 +65,7 @@
         }
     }
 
-    .Card-footer {
+    &-footer {
         display: flex;
         justify-content: space-around;
         margin: 4px;

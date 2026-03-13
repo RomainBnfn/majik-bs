@@ -1,6 +1,7 @@
-import "./SortingButton.css";
+import "./SortingButton.scss";
 import { IconButton } from "@mui/material";
 import { ArrowUpward } from "@mui/icons-material";
+import classNames from "classnames";
 
 export type SortingButtonProps = {
     onClick(): void;
@@ -25,10 +26,10 @@ const SortingButton = ({
                 <Icon />
                 {active && (
                     <ArrowUpward
-                        className={
-                            "SortingButton-order " +
-                            (isDesc ? "SortingButton-order-reverse" : "")
-                        }
+                        className={classNames(
+                            "SortingButton-order",
+                            isDesc && "SortingButton-order-reverse",
+                        )}
                     />
                 )}
             </>
