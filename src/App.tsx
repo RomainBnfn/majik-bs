@@ -4,11 +4,12 @@ import { useFirebaseValues } from "./hooks/useFirebaseValues.ts";
 import { FIREBASE_PATHS } from "./constants/firebasePaths.ts";
 import type { CardType } from "./models/card.model.ts";
 import Card from "./components/Card/Card.tsx";
+import { fromObjectToList } from "./utils/firebase.utils.ts";
 
 function App() {
     const [cards, areCardsLoading] = useFirebaseValues<CardType[]>(
         FIREBASE_PATHS.cards,
-        [],
+        {},
     );
     return (
         <>
@@ -20,7 +21,7 @@ function App() {
                 Generate cards
             </button>
             <div className={"Cards"}>
-                {[...cards]
+                {[...fromObjectToList(cards)]
                     .sort((a, b) => b.rarity.id - a.rarity.id)
                     .map((card) => (
                         <Card card={card} />

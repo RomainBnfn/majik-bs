@@ -6,5 +6,8 @@ import { getAllBrawlers } from "./brawlStars.service.ts";
 export async function generateCardsFromBrawlers(): Promise<void> {
     const brawlers = await getAllBrawlers();
     const cards = transformBrawlerToCard(brawlers);
-    return updateFirebaseValue(FIREBASE_PATHS.cards, cards);
+    return updateFirebaseValue(
+        FIREBASE_PATHS.cards,
+        cards.reduce((o, card) => ({ ...o, [card.id]: cards }), {}),
+    );
 }
