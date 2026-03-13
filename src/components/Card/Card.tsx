@@ -1,6 +1,7 @@
 import "./Card.css";
 import type { CardType } from "../../models/card.model.ts";
 import RoundStatistic from "../RoundStatistic/RoundStatistic.tsx";
+import { RadioButtonChecked, Shield, Whatshot } from "@mui/icons-material";
 
 export type CardProps = {
     card: CardType;
@@ -16,7 +17,11 @@ const Card = ({ card }: CardProps) => {
             }}
         >
             <div className={"Card-header"}>
-                <RoundStatistic value={card.rarity.id} type={"rarity"} />
+                <RoundStatistic
+                    value={card.rarity.id}
+                    type={"rarity"}
+                    icon={<RadioButtonChecked />}
+                />
                 <span>{card.name}</span>
             </div>
             <div className={"Card-content"} />
@@ -29,11 +34,11 @@ const Card = ({ card }: CardProps) => {
 };
 
 const CardAttack = ({ value }: { value: number }) => {
-    return <RoundStatistic value={value} type={"attack"} />;
+    return <RoundStatistic value={value} type={"attack"} icon={<Whatshot />} />;
 };
 
 const CardDefense = ({ value }: { value: number }) => {
-    return <RoundStatistic value={value} type={"defense"} />;
+    return <RoundStatistic value={value} type={"defense"} icon={<Shield />} />;
 };
 
 export default Card;

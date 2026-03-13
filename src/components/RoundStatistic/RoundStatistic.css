@@ -1,20 +1,27 @@
+
 .RoundStatistic {
     --color: white;
     --size: 30px;
+    --font-size: 20px;
 
-    color: #ffffff;
-    background-color: var(--color);
-
+    font-size: var(--font-size);
     display: flex;
     justify-content: center;
     align-items: center;
 
-    width: var(--size);
-    height: var(--size);
-    border-radius: 50%;
+    color: #ffffff;
 
+    width: calc(2 * var(--size));
+    height: var(--size);
     border: 3px solid #c6c6c6;
+
     font-weight: bold;
+    background-color: var(--color);
+    border-radius: 10px;
+
+    svg {
+        font-size: var(--font-size);
+    }
 }
 
 .RoundStatistic-attack {

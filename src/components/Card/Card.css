@@ -6,7 +6,7 @@
 
     --card-border-radius: 20px;
 
-    --card-outline-width: 2px;
+    --card-outline-width: 6px;
     --card-outline-color: #bcbcbc;
 
     --card-border-width: 4px;
@@ -18,9 +18,9 @@
     position: relative;
     border-radius: var(--card-border-radius);
     background: linear-gradient(
-        165deg,
-        var(--card-rarity-color) 25%,
-        #1c1c1c 70%
+            165deg,
+            var(--card-rarity-color) 25%,
+            #1c1c1c 70%
     );
 
     display: flex;
@@ -49,9 +49,9 @@
 
         .RoundStatistic {
             position: absolute;
-            right: 0;
-            bottom: 0;
-            transform: translate(0, 75%);
+            right: var(--card-inner-border-width);
+            bottom: calc(0.25 * var(--card-inner-border-width));
+            transform: translate(0, 100%);
         }
 
         span {
