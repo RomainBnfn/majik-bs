@@ -1,4 +1,4 @@
-export type Brawler = {
+export type BrawlerModel = {
     id: string,
     name: string,
     version: 1,

@@ -1,26 +1,31 @@
-import type {Brawler} from "../models/brawler.model.ts";
-import type {Card} from "../models/card.model.ts";
+import type {BrawlerModel} from "../models/brawler.model.ts";
+import type {CardType} from "../models/card.model.ts";
 import {getRandomInt} from "./random.utils.ts";
 
-const MAX_ATTACK = 10;
-const MAX_DEFENSE = 10;
+const MAX_STATISTIC = 10;
 
-export const transformBrawlerToCard = (brawlers: Brawler[]): Card[] => {
+export const getRandomAttackDefense = (rarity: number) => {
+    const randomAtk = 1 + getRandomInt(rarity * 10 - 1); // 1 to 60
+    return {
+        attack: Math.ceil(rarity / 1.5 + randomAtk / 15),
+        defense: MAX_STATISTIC - Math.floor((randomAtk / 10) + rarity / 1.5),
+    }
+}
+
+export const transformBrawlerToCard = (brawlers: BrawlerModel[]): CardType[] => {
     return brawlers.map(b => {
-        const attack = 1 + getRandomInt(MAX_ATTACK - 1);
-        const defense = 1 + MAX_DEFENSE - attack + getRandomInt(attack - 1); // Make defense lower if attacker is higher
         return {
             id: b.id,
             name: b.name,
             image: b.imageUrl,
             rarity: {
-                id: String(b.rarity.id),
+                id: (b.rarity.id),
                 name: b.rarity.name,
                 color: b.rarity.color
             },
             description: b.description,
-            attack: attack,
-            defense: defense,
+            basePrice: b.rarity.id,
+            ...getRandomAttackDefense(b.rarity.id),
         }
     })
 }

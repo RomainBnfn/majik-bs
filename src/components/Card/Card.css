@@ -1,0 +1,70 @@
+.Card {
+
+    --card-rarity-color: white;
+    --card-background-url: "";
+    --card-width: 150px;
+    --card-height: 200px;
+
+    --card-border-radius: 20px;
+
+    --card-outline-width: 2px;
+    --card-outline-color: #bcbcbc;
+
+    --card-border-width: 4px;
+    --card-border-color: var(--card-rarity-color);
+
+    --card-inner-border-width: 8px;
+    --card-border-inner-radius: 10px;
+
+    position: relative;
+    border-radius: var(--card-border-radius);
+    background: linear-gradient(
+            165deg,
+            var(--card-rarity-color) 25%,
+            #1c1c1c 70%
+    );
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    width: var(--card-width);
+    height: var(--card-height);
+
+    border: var(--card-border-width) var(--card-border-color) solid;
+    outline: var(--card-outline-width) var(--card-outline-color) solid;
+    margin: var(--card-outline-width);
+
+    .Card-content {
+        flex: 1;
+        background: no-repeat center var(--card-background-url);
+        background-size: 130%;
+        border-radius: var(--card-border-inner-radius);
+        margin: 0 var(--card-inner-border-width);
+    }
+
+    .Card-header {
+        position: relative;
+        margin-bottom: 2px;
+        text-align: center;
+
+        .RoundStatistic {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            transform: translate(0, 75%);
+        }
+
+        span {
+            font-size: 25px;
+            line-height: 22px;
+            font-weight: bold;
+        }
+    }
+
+    .Card-footer {
+        display: flex;
+        justify-content: space-around;
+        margin: 4px;
+    }
+}
