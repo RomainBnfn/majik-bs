@@ -9,6 +9,11 @@ body,
     src: url("src/assets/fonts/LondrinaShadow-Regular.ttf");
 }
 
+a {
+    color: unset;
+    text-decoration: none;
+}
+
 #root {
     overflow: hidden;
     height: 100vh;
