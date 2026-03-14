@@ -6,16 +6,20 @@ import Card from "./components/Card/Card.tsx";
 import { fromObjectToList } from "./utils/firebase.utils.ts";
 import {
     CheckBox,
+    DeleteForever,
     RadioButtonChecked,
     Shield,
+    Style,
     ViewCompactAlt,
     Whatshot,
 } from "@mui/icons-material";
 import { FunctionComponent, useState } from "react";
 import SortingButton from "./components/SortingButton/SortingButton.tsx";
-import { IconButton } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import type { DeckModel } from "./models/deck.model.ts";
 import { updateFirebaseValue } from "./services/firebase.service.ts";
+import DeckContent from "./components/DeckContent/DeckContent.tsx";
+import RoundStatistic from "./components/RoundStatistic/RoundStatistic.tsx";
 
 type Sorting = "price" | "defense" | "attack";
 const SortingIcons: Record<Sorting, FunctionComponent> = {
@@ -28,7 +32,8 @@ const SortingKeys: Record<Sorting, keyof CardModel> = {
     defense: "defense",
     attack: "attack",
 };
-const MAX_PRICE = 50;
+const MAX_PRICE = 30;
+const MAX_CARDS = 10;
 
 const fakeDeck = "DCizenjenejKBezibc";
 function App() {
@@ -43,11 +48,9 @@ function App() {
     const [displayOnly, setDisplayOnly] = useState(false);
 
     const selectedCardIds = decks.cardIds ? Object.keys(decks.cardIds) : [];
-    console.log("selectedCardIds", selectedCardIds);
 
     const setSelectedCardIds = (getValues: (p) => string[]) => {
         const newValues = getValues(selectedCardIds);
-        console.log("newValues", newValues);
         updateFirebaseValue(
             `${deckPath}/cardIds`,
             newValues.reduce((o, id, index) => ({ ...o, [id]: index }), {}),
@@ -63,7 +66,9 @@ function App() {
         .map((id) => arrayCards.find((c) => c.id == id))
         .filter((c) => !!c);
 
-    const displayedCards = displayOnly ? selectedCards : arrayCards;
+    const displayedCards = displayOnly
+        ? selectedCards
+        : arrayCards.filter((c) => !selectedCardIds.some((i) => i == c.id));
 
     const selectedPrice = selectedCards.reduce((t, c) => t + c.basePrice, 0);
 
@@ -78,7 +83,7 @@ function App() {
                         if (p.type === type) {
                             return { ...p, desc: !p.desc };
                         }
-                        return { type: type, desc: false };
+                        return { type: type, desc: true };
                     });
                 }}
             />
@@ -95,55 +100,72 @@ function App() {
                 {/*>*/}
                 {/*    Generate cards*/}
                 {/*</button>*/}
-                <div className={"Header-filters"}>
-                    <div className={"Sort"}>
-                        Sorting
-                        <Sorting type={"price"} />
-                        <Sorting type={"attack"} />
-                        <Sorting type={"defense"} />
-                    </div>
-                    <div>
-                        Mode
-                        <IconButton
-                            color={compact ? "primary" : undefined}
-                            onClick={() => setCompact((p) => !p)}
-                        >
-                            <ViewCompactAlt />
-                        </IconButton>
-                        <IconButton
-                            color={displayOnly ? "primary" : undefined}
-                            onClick={() => setDisplayOnly((p) => !p)}
-                        >
-                            <CheckBox />
-                        </IconButton>
-                    </div>
-                </div>
+
                 <div className={"Deck"}>
-                    Deck
-                    <input
-                        value={decks?.name ?? ""}
-                        onChange={(e) => {
-                            updateFirebaseValue(
-                                `${deckPath}/name`,
-                                e.target.value,
-                            );
+                    <div className={"Deck-header"}>
+                        <TextField
+                            label="Name"
+                            variant="filled"
+                            value={decks?.name ?? ""}
+                            onChange={(e) => {
+                                updateFirebaseValue(
+                                    `${deckPath}/name`,
+                                    e.target.value,
+                                );
+                            }}
+                        />
+                        <RoundStatistic
+                            value={`${selectedPrice}/${MAX_PRICE}`}
+                            type={"price"}
+                            icon={<RadioButtonChecked />}
+                        />
+                        <RoundStatistic
+                            value={`${selectedCards.length}/${MAX_CARDS}`}
+                            type={"card"}
+                            icon={<Style />}
+                        />
+                        <IconButton
+                            onClick={() => {
+                                unselectAll();
+                            }}
+                        >
+                            <DeleteForever />
+                        </IconButton>
+                    </div>
+                    <DeckContent
+                        selectedCards={selectedCards}
+                        onClick={(card) => {
+                            setSelectedCardIds((p) => {
+                                if (p.some((i) => String(i) == card.id)) {
+                                    return p.filter((i) => i != card.id);
+                                }
+                                return [...p, card.id];
+                            });
                         }}
                     />
-                    <div className={"Deck-list"}>
-                        {selectedCards.map((d) => (
-                            <div>{d.name}</div>
-                        ))}
-                    </div>
-                    <div>
-                        {selectedPrice}/{MAX_PRICE}
-                    </div>
-                    <button
-                        onClick={() => {
-                            unselectAll();
-                        }}
+                </div>
+            </div>
+            <div className={"Header-filters"}>
+                <div className={"Sort"}>
+                    Sorting
+                    <Sorting type={"price"} />
+                    <Sorting type={"attack"} />
+                    <Sorting type={"defense"} />
+                </div>
+                <div>
+                    Mode
+                    <IconButton
+                        color={compact ? "primary" : undefined}
+                        onClick={() => setCompact((p) => !p)}
                     >
-                        Clear
-                    </button>
+                        <ViewCompactAlt />
+                    </IconButton>
+                    <IconButton
+                        color={displayOnly ? "primary" : undefined}
+                        onClick={() => setDisplayOnly((p) => !p)}
+                    >
+                        <CheckBox />
+                    </IconButton>
                 </div>
             </div>
             <div className={"Cards"}>
