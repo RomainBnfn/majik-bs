@@ -28,26 +28,28 @@ const Card = ({ card, compact, onClick, active }: CardProps) => {
             <div className={"Card-header"}>
                 <RoundStatistic
                     value={card.rarity.id}
-                    type={"rarity"}
+                    type={"price"}
                     icon={<RadioButtonChecked />}
                 />
                 <span>{card.name}</span>
             </div>
             <div className={"Card-content"} />
             <div className={"Card-footer"}>
-                <CardAttack value={card.attack} />
-                <CardDefense value={card.defense} />
+                <RoundStatistic
+                    className={"Card-footer-statistic"}
+                    value={card.attack}
+                    type={"attack"}
+                    icon={<Whatshot />}
+                />
+                <RoundStatistic
+                    className={"Card-footer-statistic"}
+                    value={card.defense}
+                    type={"defense"}
+                    icon={<Shield />}
+                />
             </div>
         </div>
     );
-};
-
-const CardAttack = ({ value }: { value: number }) => {
-    return <RoundStatistic value={value} type={"attack"} icon={<Whatshot />} />;
-};
-
-const CardDefense = ({ value }: { value: number }) => {
-    return <RoundStatistic value={value} type={"defense"} icon={<Shield />} />;
 };
 
 export default Card;

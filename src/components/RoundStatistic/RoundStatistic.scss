@@ -1,35 +1,38 @@
 .RoundStatistic {
-    --color: white;
-    --size: 30px;
-    --font-size: 20px;
+    --statistic-color: white;
+    --font-size: 14px;
+    --statistic-border-color: #e5e5e5;
+    --statistic-text-color: #ffffff;
 
     font-size: var(--font-size);
     display: flex;
     justify-content: center;
     align-items: center;
 
-    color: #ffffff;
-
-    width: calc(2 * var(--size));
-    height: var(--size);
-    border: 3px solid #c6c6c6;
+    color: var(--statistic-text-color);
+    border: 2px solid var(--statistic-border-color);
 
     font-weight: bold;
-    background-color: var(--color);
-    border-radius: 10px;
+    background-color: var(--statistic-color);
+    border-radius: 8px;
+    padding: 0 4px;
+    gap: 2px;
 
     svg {
         font-size: var(--font-size);
     }
     &-attack {
-        --color: #7e0b26;
+        --statistic-color: #7e0b26;
     }
 
     &-defense {
-        --color: #1d5370;
+        --statistic-color: #1d5370;
     }
 
-    &-rarity {
-        --color: #cc9300;
+    &-price {
+        --statistic-color: #cc9300;
+    }
+    &-card {
+        --statistic-color: #cc00b1;
     }
 }

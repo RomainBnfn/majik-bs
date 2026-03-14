@@ -1,19 +1,22 @@
 .Card {
     --card-rarity-color: white;
     --card-background-url: "";
-    --card-width: 150px;
-    --card-height: 200px;
 
-    --card-border-radius: 20px;
+    --card-width: 100px;
+    --card-height: 150px;
 
-    --card-outline-width: 6px;
-    --card-outline-color: #bcbcbc;
+    --card-border-radius: 8px;
 
-    --card-border-width: 4px;
+    --card-outline-width: 4px;
+    --card-outline-color: #c2c2c2;
+
+    --card-border-width: 2px;
     --card-border-color: var(--card-rarity-color);
 
-    --card-inner-border-width: 8px;
-    --card-border-inner-radius: 10px;
+    --card-inner-border-width: 4px;
+    --card-border-inner-radius: 6px;
+
+    --card-header-font-size: 22px;
 
     position: relative;
     border-radius: var(--card-border-radius);
@@ -34,6 +37,8 @@
     outline: var(--card-outline-width) var(--card-outline-color) solid;
     margin: var(--card-outline-width);
 
+    transition: outline 1s ease-in-out;
+
     &-content {
         flex: 1;
         background: no-repeat center var(--card-background-url);
@@ -43,17 +48,23 @@
     }
 
     &-compact {
-        --card-height: 110px;
+        --card-height: 80px;
     }
 
     &-active {
-        --card-outline-color: #43b4ab;
+        --card-outline-color: #2beacf;
+        --card-outline-width: 5px;
+        --card-border-width: 1px;
     }
 
     &-header {
         position: relative;
-        margin-bottom: 2px;
+        margin: 2px;
         text-align: center;
+
+        span {
+            font-family: "LondrinaShadow";
+        }
 
         .RoundStatistic {
             position: absolute;
@@ -63,8 +74,8 @@
         }
 
         span {
-            font-size: 25px;
-            line-height: 22px;
+            font-size: var(--card-header-font-size);
+            line-height: calc(var(--card-header-font-size) - 4px);
             font-weight: bold;
         }
     }
@@ -73,5 +84,10 @@
         display: flex;
         justify-content: space-around;
         margin: 4px;
+        gap: 4px;
+
+        &-statistic {
+            flex: 1;
+        }
     }
 }
