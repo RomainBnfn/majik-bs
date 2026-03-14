@@ -5,6 +5,10 @@
     overflow-y: auto;
     gap: 4px;
     justify-content: center;
+
+    &-wrong-item {
+        animation: wiggle 0.5s ease-in-out;
+    }
 }
 
 .Header {

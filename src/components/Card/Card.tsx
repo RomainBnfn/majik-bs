@@ -1,52 +1,78 @@
 import "./Card.scss";
 import type { CardModel } from "../../models/card.model.ts";
 import RoundStatistic from "../RoundStatistic/RoundStatistic.tsx";
-import { RadioButtonChecked, Shield, Whatshot } from "@mui/icons-material";
+import {
+    Adjust,
+    RadioButtonChecked,
+    Shield,
+    Whatshot,
+} from "@mui/icons-material";
 import classNames from "classnames";
 
 export type CardProps = {
     card: CardModel;
     compact?: boolean;
     active?: boolean;
+    reverse?: boolean;
     onClick?(): void;
+    className?: string;
+    onAnimationEnd?(): void;
 };
 
-const Card = ({ card, compact, onClick, active }: CardProps) => {
+const Card = ({
+    card,
+    compact,
+    onClick,
+    active,
+    reverse,
+    className,
+    onAnimationEnd,
+}: CardProps) => {
     return (
         <div
             className={classNames(
                 "Card",
                 compact && "Card-compact",
                 active && "Card-active",
+                reverse && "Card-reverse",
+                className,
             )}
             style={{
                 "--card-rarity-color": card.rarity.color,
                 "--card-background-url": `url(${card.image})`,
             }}
             onClick={() => onClick?.()}
+            onAnimationEnd={() => onAnimationEnd?.()}
         >
-            <div className={"Card-header"}>
-                <RoundStatistic
-                    value={card.rarity.id}
-                    type={"price"}
-                    icon={<RadioButtonChecked />}
-                />
-                <span>{card.name}</span>
-            </div>
-            <div className={"Card-content"} />
-            <div className={"Card-footer"}>
-                <RoundStatistic
-                    className={"Card-footer-statistic"}
-                    value={card.attack}
-                    type={"attack"}
-                    icon={<Whatshot />}
-                />
-                <RoundStatistic
-                    className={"Card-footer-statistic"}
-                    value={card.defense}
-                    type={"defense"}
-                    icon={<Shield />}
-                />
+            <div className={"Card-inner"}>
+                <div className={"Card-front"}>
+                    <div className={"Card-header"}>
+                        <RoundStatistic
+                            value={card.rarity.id}
+                            type={"price"}
+                            icon={<RadioButtonChecked />}
+                        />
+                        <span>{card.name}</span>
+                    </div>
+                    <div className={"Card-content"} />
+                    <div className={"Card-footer"}>
+                        <RoundStatistic
+                            className={"Card-footer-statistic"}
+                            value={card.attack}
+                            type={"attack"}
+                            icon={<Whatshot />}
+                        />
+                        <RoundStatistic
+                            className={"Card-footer-statistic"}
+                            value={card.defense}
+                            type={"defense"}
+                            icon={<Shield />}
+                        />
+                    </div>
+                </div>
+                <div className={"Card-back"}>
+                    <Adjust />
+                </div>
             </div>
         </div>
     );

@@ -21,6 +21,7 @@ import { updateFirebaseValue } from "../../services/firebase.service.ts";
 import DeckContent from "../../components/DeckContent/DeckContent.tsx";
 import RoundStatistic from "../../components/RoundStatistic/RoundStatistic.tsx";
 import { Link, useParams } from "react-router";
+import classNames from "classnames";
 
 type Sorting = "price" | "defense" | "attack";
 const SortingIcons: Record<Sorting, FunctionComponent> = {
@@ -50,6 +51,8 @@ const DeckPage = () => {
 
     const selectedCardIds = decks.cardIds ? Object.keys(decks.cardIds) : [];
 
+    const [wrongId, setWrongId] = useState<string | undefined>(undefined);
+
     const setSelectedCardIds = (getValues: (p) => string[]) => {
         const newValues = getValues(selectedCardIds);
         updateFirebaseValue(
@@ -67,9 +70,8 @@ const DeckPage = () => {
         .map((id) => arrayCards.find((c) => c.id == id))
         .filter((c) => !!c);
 
-    const displayedCards = displayOnly
-        ? selectedCards
-        : arrayCards.filter((c) => !selectedCardIds.some((i) => i == c.id));
+    const displayedCards = displayOnly ? selectedCards : arrayCards;
+    //.filter((c) => !selectedCardIds.some((i) => i == c.id));
 
     const selectedPrice = selectedCards.reduce((t, c) => t + c.basePrice, 0);
 
@@ -96,7 +98,8 @@ const DeckPage = () => {
             selectedCardIds.length >= MAX_CARDS &&
             !selectedCardIds.some((i) => i == card.id)
         ) {
-            return; // TODO animation
+            setWrongId(card.id);
+            return;
         }
         setSelectedCardIds((p) => {
             if (p.some((i) => String(i) == card.id)) {
@@ -180,7 +183,13 @@ const DeckPage = () => {
                     )
                     .map((card) => (
                         <Card
-                            active={selectedCardIds.some((i) => i == card.id)}
+                            className={classNames(
+                                wrongId == card.id && "Cards-wrong-item",
+                            )}
+                            onAnimationEnd={() => {
+                                setWrongId(undefined);
+                            }}
+                            reverse={selectedCardIds.some((i) => i == card.id)}
                             key={card.id}
                             card={card}
                             compact={compact}
