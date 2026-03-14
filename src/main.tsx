@@ -8,6 +8,8 @@ import { RouterProvider } from "react-router/dom";
 import DecksPage from "./pages/DecksPage/DecksPage.tsx";
 import DeckPage from "./pages/DeckPage/DeckPage.tsx";
 import HomePage from "./pages/HomePage/HomePage.tsx";
+import CardGlobalContextProvider from "./globalContexts/CardGlobalContext/CardGlobalContextProvider.tsx";
+import GameSettingGlobalContextProvider from "./globalContexts/GameSettingGlobalContext/GameSettingGlobalContextProvider.tsx";
 
 export const firebaseApp = initializeApp(firebaseConfig);
 
@@ -15,9 +17,11 @@ const router = createBrowserRouter([
     {
         path: "/",
         element: (
-            <>
-                <Outlet />
-            </>
+            <CardGlobalContextProvider>
+                <GameSettingGlobalContextProvider>
+                    <Outlet />
+                </GameSettingGlobalContextProvider>
+            </CardGlobalContextProvider>
         ),
         children: [
             {
