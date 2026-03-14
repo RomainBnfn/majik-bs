@@ -20,6 +20,7 @@ const DeckContent = ({ selectedCards, onClick }: DeckContentProps) => {
                     }}
                 />
             ))}
+            {!selectedCards?.length && <span>No selected card</span>}
         </div>
     );
 };

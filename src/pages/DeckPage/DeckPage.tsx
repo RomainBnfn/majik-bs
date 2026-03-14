@@ -1,9 +1,9 @@
-import "./App.scss";
-import { useFirebaseValues } from "./hooks/useFirebaseValues.ts";
-import { FIREBASE_PATHS } from "./constants/firebasePaths.ts";
-import type { CardModel } from "./models/card.model.ts";
-import Card from "./components/Card/Card.tsx";
-import { fromObjectToList } from "./utils/firebase.utils.ts";
+import "./DeckPage.scss";
+import { useFirebaseValues } from "../../hooks/useFirebaseValues.ts";
+import { FIREBASE_PATHS } from "../../constants/firebasePaths.ts";
+import type { CardModel } from "../../models/card.model.ts";
+import Card from "../../components/Card/Card.tsx";
+import { fromObjectToList } from "../../utils/firebase.utils.ts";
 import {
     CheckBox,
     DeleteForever,
@@ -14,12 +14,13 @@ import {
     Whatshot,
 } from "@mui/icons-material";
 import { FunctionComponent, useState } from "react";
-import SortingButton from "./components/SortingButton/SortingButton.tsx";
+import SortingButton from "../../components/SortingButton/SortingButton.tsx";
 import { IconButton, TextField } from "@mui/material";
-import type { DeckModel } from "./models/deck.model.ts";
-import { updateFirebaseValue } from "./services/firebase.service.ts";
-import DeckContent from "./components/DeckContent/DeckContent.tsx";
-import RoundStatistic from "./components/RoundStatistic/RoundStatistic.tsx";
+import type { DeckModel } from "../../models/deck.model.ts";
+import { updateFirebaseValue } from "../../services/firebase.service.ts";
+import DeckContent from "../../components/DeckContent/DeckContent.tsx";
+import RoundStatistic from "../../components/RoundStatistic/RoundStatistic.tsx";
+import { Link, useParams } from "react-router";
 
 type Sorting = "price" | "defense" | "attack";
 const SortingIcons: Record<Sorting, FunctionComponent> = {
@@ -35,13 +36,13 @@ const SortingKeys: Record<Sorting, keyof CardModel> = {
 const MAX_PRICE = 30;
 const MAX_CARDS = 10;
 
-const fakeDeck = "DCizenjenejKBezibc";
-function App() {
+const DeckPage = () => {
+    const { id } = useParams();
     const [cards, areCardsLoading] = useFirebaseValues<CardModel[]>(
         FIREBASE_PATHS.cards,
         {},
     );
-    const deckPath = `${FIREBASE_PATHS.decks}/${fakeDeck}`;
+    const deckPath = `${FIREBASE_PATHS.decks}/${id}`;
     const [decks, areDeckLoading] = useFirebaseValues<DeckModel>(deckPath, {});
     const [sorting, setSorting] = useState({ type: "price", desc: false });
     const [compact, setCompact] = useState(false);
@@ -90,17 +91,25 @@ function App() {
         );
     };
 
+    const onClickOnCard = (card: CardModel) => {
+        if (
+            selectedCardIds.length >= MAX_CARDS &&
+            !selectedCardIds.some((i) => i == card.id)
+        ) {
+            return; // TODO animation
+        }
+        setSelectedCardIds((p) => {
+            if (p.some((i) => String(i) == card.id)) {
+                return p.filter((i) => i != card.id);
+            }
+            return [card.id, ...p];
+        });
+    };
+
     return (
         <>
+            <Link to={"/decks"}>Back</Link>
             <div className={"Header"}>
-                {/*<button*/}
-                {/*    onClick={() => {*/}
-                {/*        generateCardsFromBrawlers();*/}
-                {/*    }}*/}
-                {/*>*/}
-                {/*    Generate cards*/}
-                {/*</button>*/}
-
                 <div className={"Deck"}>
                     <div className={"Deck-header"}>
                         <TextField
@@ -134,14 +143,7 @@ function App() {
                     </div>
                     <DeckContent
                         selectedCards={selectedCards}
-                        onClick={(card) => {
-                            setSelectedCardIds((p) => {
-                                if (p.some((i) => String(i) == card.id)) {
-                                    return p.filter((i) => i != card.id);
-                                }
-                                return [...p, card.id];
-                            });
-                        }}
+                        onClick={onClickOnCard}
                     />
                 </div>
             </div>
@@ -183,18 +185,13 @@ function App() {
                             card={card}
                             compact={compact}
                             onClick={() => {
-                                setSelectedCardIds((p) => {
-                                    if (p.some((i) => String(i) == card.id)) {
-                                        return p.filter((i) => i != card.id);
-                                    }
-                                    return [...p, card.id];
-                                });
+                                onClickOnCard(card);
                             }}
                         />
                     ))}
             </div>
         </>
     );
-}
+};
 
-export default App;
+export default DeckPage;
