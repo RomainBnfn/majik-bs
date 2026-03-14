@@ -8,20 +8,25 @@ import { RouterProvider } from "react-router/dom";
 import DecksPage from "./pages/DecksPage/DecksPage.tsx";
 import DeckPage from "./pages/DeckPage/DeckPage.tsx";
 import HomePage from "./pages/HomePage/HomePage.tsx";
+import { GoogleAuthProvider } from "firebase/auth";
 import CardGlobalContextProvider from "./globalContexts/CardGlobalContext/CardGlobalContextProvider.tsx";
 import GameSettingGlobalContextProvider from "./globalContexts/GameSettingGlobalContext/GameSettingGlobalContextProvider.tsx";
+import AuthGlobalContextProvider from "./globalContexts/AuthGlobalContext/AuthGlobalContextProvider.tsx";
 
 export const firebaseApp = initializeApp(firebaseConfig);
+export const firebaseAuthProvider = new GoogleAuthProvider();
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: (
-            <CardGlobalContextProvider>
-                <GameSettingGlobalContextProvider>
-                    <Outlet />
-                </GameSettingGlobalContextProvider>
-            </CardGlobalContextProvider>
+            <AuthGlobalContextProvider>
+                <CardGlobalContextProvider>
+                    <GameSettingGlobalContextProvider>
+                        <Outlet />
+                    </GameSettingGlobalContextProvider>
+                </CardGlobalContextProvider>
+            </AuthGlobalContextProvider>
         ),
         children: [
             {
