@@ -20,6 +20,7 @@
     --card-border-inner-radius: 6px;
 
     --card-header-font-size: 22px;
+    --card-back-logo-size: 90px;
 
     perspective: 1000px;
 
@@ -98,7 +99,7 @@
         align-items: center;
         justify-content: center;
         svg {
-            font-size: 90px;
+            font-size: var(--card-back-logo-size);
         }
     }
 
@@ -112,6 +113,7 @@
 
     &-compact {
         --card-height: 80px;
+        --card-back-logo-size: 50px;
     }
 
     &-active {
@@ -132,7 +134,7 @@
         .RoundStatistic {
             position: absolute;
             z-index: 2;
-            right: var(--card-inner-border-width);
+            right: calc(var(--card-inner-border-width) / 2);
             bottom: calc(0.25 * var(--card-inner-border-width));
             transform: translate(0, 100%);
         }

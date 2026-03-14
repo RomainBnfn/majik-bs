@@ -3,7 +3,6 @@ import { useFirebaseValues } from "../../hooks/useFirebaseValues.ts";
 import { FIREBASE_PATHS } from "../../constants/firebasePaths.ts";
 import type { CardModel } from "../../models/card.model.ts";
 import Card from "../../components/Card/Card.tsx";
-import { fromObjectToList } from "../../utils/firebase.utils.ts";
 import {
     CheckBox,
     DeleteForever,
@@ -22,6 +21,8 @@ import DeckContent from "../../components/DeckContent/DeckContent.tsx";
 import RoundStatistic from "../../components/RoundStatistic/RoundStatistic.tsx";
 import { Link, useParams } from "react-router";
 import classNames from "classnames";
+import { useCards } from "../../globalContexts/CardGlobalContext/CardGlobalContext.tsx";
+import { useGameSettingCards } from "../../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
 
 type Sorting = "price" | "defense" | "attack";
 const SortingIcons: Record<Sorting, FunctionComponent> = {
@@ -34,15 +35,12 @@ const SortingKeys: Record<Sorting, keyof CardModel> = {
     defense: "defense",
     attack: "attack",
 };
-const MAX_PRICE = 30;
-const MAX_CARDS = 10;
 
 const DeckPage = () => {
     const { id } = useParams();
-    const [cards, areCardsLoading] = useFirebaseValues<CardModel[]>(
-        FIREBASE_PATHS.cards,
-        {},
-    );
+    const { cards } = useCards();
+    const { maxPrice, maxCard } = useGameSettingCards();
+
     const deckPath = `${FIREBASE_PATHS.decks}/${id}`;
     const [decks, areDeckLoading] = useFirebaseValues<DeckModel>(deckPath, {});
     const [sorting, setSorting] = useState({ type: "price", desc: false });
@@ -65,12 +63,11 @@ const DeckPage = () => {
         updateFirebaseValue(`${deckPath}/cardIds`, "");
     };
 
-    const arrayCards = fromObjectToList<CardModel>(cards);
     const selectedCards = selectedCardIds
-        .map((id) => arrayCards.find((c) => c.id == id))
+        .map((id) => cards.find((c) => c.id == id))
         .filter((c) => !!c);
 
-    const displayedCards = displayOnly ? selectedCards : arrayCards;
+    const displayedCards = displayOnly ? selectedCards : cards;
     //.filter((c) => !selectedCardIds.some((i) => i == c.id));
 
     const selectedPrice = selectedCards.reduce((t, c) => t + c.basePrice, 0);
@@ -94,9 +91,11 @@ const DeckPage = () => {
     };
 
     const onClickOnCard = (card: CardModel) => {
+        const isUnselecting = selectedCardIds.some((i) => i == card.id);
         if (
-            selectedCardIds.length >= MAX_CARDS &&
-            !selectedCardIds.some((i) => i == card.id)
+            !isUnselecting &&
+            (selectedCardIds.length >= maxCard ||
+                card.basePrice + selectedPrice > maxPrice)
         ) {
             setWrongId(card.id);
             return;
@@ -127,12 +126,12 @@ const DeckPage = () => {
                             }}
                         />
                         <RoundStatistic
-                            value={`${selectedPrice}/${MAX_PRICE}`}
+                            value={`${selectedPrice}/${maxPrice}`}
                             type={"price"}
                             icon={<RadioButtonChecked />}
                         />
                         <RoundStatistic
-                            value={`${selectedCards.length}/${MAX_CARDS}`}
+                            value={`${selectedCards.length}/${maxCard}`}
                             type={"card"}
                             icon={<Style />}
                         />
