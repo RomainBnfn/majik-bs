@@ -13,7 +13,10 @@ import { TurnPhaseTypes } from "../../../enums/TurnPhaseType.enum.ts";
 import { attackWithCard, defense } from "../../../services/game.service.ts";
 import { useCards } from "../../../globalContexts/CardGlobalContext/CardGlobalContext.tsx";
 
-export const transformGameResponse = (v: FirebaseGameModel, id: string) => ({
+export const transformGameResponse = (
+    v: FirebaseGameModel,
+    id: string,
+): GameModel => ({
     ...v,
     _id: id,
     players: fromObjectToList(v.players).map(

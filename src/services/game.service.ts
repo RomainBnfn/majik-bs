@@ -5,10 +5,26 @@ import {
     getPlayer,
     getRandomAvailableCardIds,
 } from "../utils/game.utils.ts";
-import { getFirebaseValue, updateFirebaseValue } from "./firebase.service.ts";
+import {
+    getFirebaseRef,
+    getFirebaseValue,
+    pushFirebaseValue,
+    updateFirebaseValue,
+} from "./firebase.service.ts";
 import { FIREBASE_PATHS } from "../constants/firebasePaths.ts";
 import { TurnPhaseTypes } from "../enums/TurnPhaseType.enum.ts";
 import { transformGameResponse } from "../pages/GamePage/contexts/GameContextProvider.tsx";
+import { getRandomInt, getRandomStringCode } from "../utils/random.utils.ts";
+import type { UserModel } from "../models/user.model.ts";
+import { equalTo, get, orderByChild, query } from "firebase/database";
+import { fromObjectToList } from "../utils/firebase.utils.ts";
+import { getDeckFromId } from "./cards.service.ts";
+
+const INVITATION_CODE_LENGTH = 6;
+
+export const getGameById = (id: string) => {
+    return getFirebaseValue(`${FIREBASE_PATHS.games}/${id}`);
+};
 
 export const attackWithCard = (game: GameModel, card: CardModel) => {
     // if opponent has no card
@@ -70,4 +86,110 @@ export const startPlayerTurn = (game: GameModel, playerId: string) => {
         currentSelectedCardId: null,
     };
     return updateFirebaseValue(`${FIREBASE_PATHS.games}/${game._id}/`, updates);
+};
+
+export const getFreeInvitationCode = async () => {
+    return getRandomStringCode(6);
+};
+
+export const createGame = async (
+    user: UserModel,
+    deckId: string,
+    maxHealth: number,
+) => {
+    const deck = await getDeckFromId(deckId);
+    if (!deck) {
+        return;
+    }
+    const cardIds = Object.keys(deck.cardIds);
+    const invitationCode = await getFreeInvitationCode();
+    return pushFirebaseValue(FIREBASE_PATHS.games, {
+        players: {
+            [user.uid]: {
+                exists: true,
+                deckCardIds: cardIds.reduce((o, c) => ({ ...o, [c]: c }), {}),
+                discardCardIds: "",
+                inHandCardIds: "",
+                health: maxHealth,
+                displayName: user.displayName,
+            },
+        },
+        currentPlayerId: "",
+        currentTurn: 1,
+        currentPhase: TurnPhaseTypes.Attack,
+        currentSelectedCardId: null,
+        isStarted: false,
+        invitationCode,
+    });
+};
+
+export const joinGame = async (
+    user: UserModel,
+    invitationCode: string,
+    deckId: string,
+    maxHealth: number,
+) => {
+    const firebaseGame = await get(
+        query(
+            getFirebaseRef(FIREBASE_PATHS.games),
+            orderByChild("invitationCode"),
+            equalTo(invitationCode),
+        ),
+    );
+    if (!firebaseGame.exists()) {
+        return;
+    }
+    const game = fromObjectToList<GameModel>(firebaseGame.val())
+        .map((v) => transformGameResponse(v, v._id))
+        .find((g) => !g.isStarted && !g.players.some((p) => p._id == user.uid));
+    if (!game) {
+        console.log("No game found");
+        return;
+    }
+    const deck = await getDeckFromId(deckId);
+    if (!deck) {
+        return;
+    }
+    const cardIds = Object.keys(deck.cardIds);
+    await updateFirebaseValue(`${FIREBASE_PATHS.games}/${game._id}`, {
+        [`players/${user.uid}`]: {
+            exists: true,
+            deckCardIds: cardIds.reduce((o, c) => ({ ...o, [c]: c }), {}),
+            discardCardIds: "",
+            inHandCardIds: "",
+            health: maxHealth,
+            displayName: user.displayName,
+        },
+        isStarted: true,
+    });
+    await startGame(game._id);
+};
+
+export const startGame = async (gameId: string) => {
+    const firebaseGame = await getGameById(gameId);
+    if (!firebaseGame.exists()) {
+        return;
+    }
+    const game = transformGameResponse(firebaseGame.val(), gameId);
+    const startingPlayer = game.players[getRandomInt(game.players.length - 1)];
+
+    const updates = {
+        currentPlayerId: startingPlayer._id,
+    };
+    // Pick cards
+    game.players.forEach((p) => {
+        const toPickCardIds = getRandomAvailableCardIds(p, 3);
+        toPickCardIds.forEach((i) => {
+            updates[`players/${p._id}/inHandCardIds/${i}`] = i;
+        });
+    });
+    return updateFirebaseValue(`${FIREBASE_PATHS.games}/${gameId}/`, updates);
+};
+
+export const getAllPlayerGames = (playerId: string) => {
+    return query(
+        getFirebaseRef(FIREBASE_PATHS.games),
+        orderByChild(`players/${playerId}/exists`),
+        equalTo(true),
+    );
 };

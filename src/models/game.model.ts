@@ -13,6 +13,8 @@ export type GameModel = WithId<{
     currentPhase: TurnPhaseType;
     currentSelectedCardId: string | null;
     winnerPlayerId?: string;
+    isStarted: boolean;
+    invitationCode: string;
 }>;
 
 export type FirebaseGameModel = Omit<GameModel, "players" | "_id"> & {
