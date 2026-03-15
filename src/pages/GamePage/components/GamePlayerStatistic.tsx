@@ -1,9 +1,10 @@
 import classNames from "classnames";
 import { useGame } from "../contexts/gameContext.tsx";
 import { useAuth } from "../../../globalContexts/AuthGlobalContext/AuthGlobalContext.tsx";
-import type { PlayerGameModel } from "../../../models/game.model.ts";
 import { useCards } from "../../../globalContexts/CardGlobalContext/CardGlobalContext.tsx";
 import { useGameSettingCards } from "../../../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
+import type { PlayerGameModel } from "../../../models/playerGame.model.ts";
 
 type GamePlayerStatisticProps = {
     player: PlayerGameModel;
@@ -14,7 +15,7 @@ const GamePlayerStatistic = ({ player }: GamePlayerStatisticProps) => {
     const { user } = useAuth();
     const isUs = player._id == user?.uid;
 
-    const { cardInHand } = useGameSettingCards();
+    const { cardInHand, maxHealth } = useGameSettingCards();
     const { onClickOnCard } = useGame();
 
     return (
@@ -24,7 +25,10 @@ const GamePlayerStatistic = ({ player }: GamePlayerStatisticProps) => {
                 isUs && "GamePlayerStatistic-self",
             )}
         >
-            Statis HP : {player.health}/5
+            {player.displayName}
+            {[...new Array(maxHealth).keys()].map((_, i) =>
+                player.health >= i + 1 ? <Favorite /> : <FavoriteBorder />,
+            )}
         </div>
     );
 };

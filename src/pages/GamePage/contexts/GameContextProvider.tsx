@@ -10,10 +10,7 @@ import { FIREBASE_PATHS } from "../../../constants/firebasePaths.ts";
 import { type CardModel } from "../../../models/card.model.ts";
 import { useAuth } from "../../../globalContexts/AuthGlobalContext/AuthGlobalContext.tsx";
 import { TurnPhaseTypes } from "../../../enums/TurnPhaseType.enum.ts";
-import {
-    attackWithCard,
-    defenseWithCard,
-} from "../../../services/game.service.ts";
+import { attackWithCard, defense } from "../../../services/game.service.ts";
 import { useCards } from "../../../globalContexts/CardGlobalContext/CardGlobalContext.tsx";
 
 export const transformGameResponse = (v: FirebaseGameModel, id: string) => ({
@@ -29,7 +26,7 @@ export const transformGameResponse = (v: FirebaseGameModel, id: string) => ({
     ),
 });
 
-const valuesIfExists = (o): string[] => (o ? Object.values(o) : []);
+const valuesIfExists = (o): string[] => (o ? Object.values(o).map(String) : []);
 
 const GameContextProvider = ({ children }) => {
     const { id } = useParams();
@@ -61,7 +58,23 @@ const GameContextProvider = ({ children }) => {
         if (!attackingCard) {
             return;
         }
-        return defenseWithCard(gameState, c, attackingCard);
+        return defense(gameState, c, attackingCard);
+    };
+
+    const onSkipDefense = () => {
+        if (
+            !shouldSelectCard ||
+            gameState.currentPhase !== TurnPhaseTypes.Defense
+        ) {
+            return;
+        }
+        const attackingCard = gameState.currentSelectedCardId
+            ? getCardById(gameState.currentSelectedCardId)
+            : undefined;
+        if (!attackingCard) {
+            return;
+        }
+        return defense(gameState, undefined, attackingCard);
     };
 
     return (
@@ -69,6 +82,7 @@ const GameContextProvider = ({ children }) => {
             value={{
                 game: gameState,
                 onClickOnCard,
+                onSkipDefense,
                 isLoggedPlayerTurn,
                 shouldSelectCard,
             }}
