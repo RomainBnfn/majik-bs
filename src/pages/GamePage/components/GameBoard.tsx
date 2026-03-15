@@ -10,7 +10,7 @@ import { Button } from "@mui/material";
 import { TurnPhaseTypes } from "../../../enums/TurnPhaseType.enum.ts";
 
 const GameBoard = () => {
-    const { game, shouldSelectCard, onSkipDefense } = useGame();
+    const { game, shouldSelectCard, onSkipDefense, hasStarted } = useGame();
     const { user } = useAuth();
     return (
         <div className={"GameBoard"}>
@@ -19,8 +19,11 @@ const GameBoard = () => {
                     <Adjust className={""} />
                 </div>
                 <div className={"GameBoard-content-cards"}>
-                    {game.players?.map((p) => (
-                        <GameHand key={p._id} player={p} />
+                    {[...new Array(2).keys()].map((_, i) => (
+                        <GameHand
+                            key={game.players?.[i]?._id ?? i}
+                            player={game.players?.[i]}
+                        />
                     ))}
                 </div>
                 {game.players?.map((p) => (
@@ -31,11 +34,12 @@ const GameBoard = () => {
                 ))}
                 <GameCurrentPhase />
             </div>
-            {game.players?.map((p) => (
-                <>
-                    <GamePlayerStatistic player={p} />
-                </>
-            ))}
+            {hasStarted &&
+                game.players?.map((p) => (
+                    <>
+                        <GamePlayerStatistic player={p} />
+                    </>
+                ))}
             {game.currentPhase === TurnPhaseTypes.Defense &&
                 shouldSelectCard && (
                     <Button onClick={() => onSkipDefense()} variant="outlined">

@@ -48,6 +48,7 @@ export const defense = async (
     const defId = defendingPlayer._id;
     const atkId = game.currentPlayerId;
 
+    let isTerminated = false;
     const updates = {
         [`players/${atkId}/discardCardIds/${attackingCard._id}`]:
             attackingCard._id,
@@ -60,12 +61,20 @@ export const defense = async (
     }
     if (!card || attackingCard.attack > card.defense) {
         updates[`players/${defId}/health`] = defendingPlayer.health - 1;
+
+        if (defendingPlayer.health - 1 <= 0) {
+            updates["winnerPlayerId"] = atkId;
+            isTerminated = true;
+        }
     }
 
     await updateFirebaseValue(`${FIREBASE_PATHS.games}/${game._id}/`, updates);
     const updatedGame = await getFirebaseValue(
         `${FIREBASE_PATHS.games}/${game._id}`,
     );
+    if (isTerminated) {
+        return;
+    }
     await startPlayerTurn(
         transformGameResponse(updatedGame.val(), game._id),
         defId,
