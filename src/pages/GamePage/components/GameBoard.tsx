@@ -1,5 +1,6 @@
 import { useGame } from "../contexts/gameContext.tsx";
 import GameHand from "./GameHand.tsx";
+import GamePlayerStatistic from "./GamePlayerStatistic.tsx";
 
 const GameBoard = () => {
     const { game } = useGame();
@@ -11,6 +12,9 @@ const GameBoard = () => {
                     <GameHand key={p._id} player={p} />
                 ))}
             </div>
+            {game.players?.map((p) => (
+                <GamePlayerStatistic player={p} />
+            ))}
         </div>
     );
 };

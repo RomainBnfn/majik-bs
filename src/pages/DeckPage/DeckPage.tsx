@@ -23,6 +23,7 @@ import { Link, useParams } from "react-router";
 import classNames from "classnames";
 import { useCards } from "../../globalContexts/CardGlobalContext/CardGlobalContext.tsx";
 import { useGameSettingCards } from "../../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
+import { generateCardsFromBrawlers } from "../../services/cards.service.ts";
 
 type Sorting = "price" | "defense" | "attack";
 const SortingIcons: Record<Sorting, FunctionComponent> = {
@@ -198,6 +199,13 @@ const DeckPage = () => {
                         />
                     ))}
             </div>
+            <button
+                onClick={() => {
+                    generateCardsFromBrawlers();
+                }}
+            >
+                Reset
+            </button>
         </>
     );
 };

@@ -3,12 +3,23 @@ import type { CardModel } from "../models/card.model.ts";
 import { getRandomInt } from "./random.utils.ts";
 
 const MAX_STATISTIC = 10;
+const MIN_STATISTIC = 1;
 
+const getMaxStatistic = (rarity: number) =>
+    MAX_STATISTIC - Math.max(0, 7 - rarity);
+
+const minMax = (v: number, rarity: number) =>
+    Math.min(getMaxStatistic(rarity), Math.max(MIN_STATISTIC, v));
+
+const getStatisticsToSpread = (rarity: number) => {
+    return Math.floor(Math.pow(rarity, 1.3) - 0.5 * rarity + 5);
+};
 export const getRandomAttackDefense = (rarity: number) => {
-    const randomAtk = 1 + getRandomInt(rarity * 10 - 1); // 1 to 60
+    const stats = getStatisticsToSpread(rarity);
+    const randomAtk = minMax(1 + getRandomInt(stats), rarity);
     return {
-        attack: Math.ceil(rarity / 1.5 + randomAtk / 15),
-        defense: MAX_STATISTIC - Math.floor(randomAtk / 10 + rarity / 1.5),
+        attack: randomAtk,
+        defense: minMax(stats - randomAtk, rarity),
     };
 };
 
