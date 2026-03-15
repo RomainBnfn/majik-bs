@@ -28,14 +28,14 @@ export const filterCardNotIn = (deckCardIds: string[], excludes: string[]) => {
 export const getRandomAvailableCardIds = (
     p: PlayerGameModel,
     maxCards: number,
-) => {
+): string[] => {
     const availableCards = getAvailableCardIds(p);
     if (!availableCards.length) {
         return [];
     }
     const toPickCards =
         Math.min(maxCards, availableCards.length) - p.inHandCardIds.length;
-    const cards = [];
+    const cards: string[] = [];
     while (cards.length < toPickCards) {
         const remainingAvailable = filterCardNotIn(availableCards, cards);
         cards.push(

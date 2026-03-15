@@ -9,7 +9,7 @@ const CardGlobalContextProvider = ({ children }) => {
     const [cards, areCardsLoading] = useFirebaseValues<
         CardModel[],
         ListObject<CardModel>
-    >(FIREBASE_PATHS.cards, [], fromObjectToList);
+    >(FIREBASE_PATHS.userDecks, [], fromObjectToList);
     return (
         <CardGlobalContext.Provider
             value={{

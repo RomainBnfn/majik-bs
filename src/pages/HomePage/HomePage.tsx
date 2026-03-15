@@ -54,7 +54,7 @@ const HomePage = () => {
                 <>
                     Hello {user?.displayName}
                     <Link to={"/decks"}>Decks</Link>
-                    <Link to={"/game/zihLJHBbLbjl"}>Game!!!</Link>
+                    <Link to={"/games"}>Games</Link>
                 </>
             )}
         </>
