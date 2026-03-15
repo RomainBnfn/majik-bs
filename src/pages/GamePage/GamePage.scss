@@ -1,0 +1,54 @@
+.GameBoard {
+    --transaaaa: 120px;
+    display: flex;
+    flex-direction: column;
+    perspective: var(--transaaaa);
+    background-color: #8dbaea;
+
+    &-content {
+        --angle: 15deg;
+        --translate-z: -35px;
+        --translate-y: -60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #4f84be;
+        transform: rotateX(var(--angle)) translateY(var(--translate-y))
+            translateZ(var(--translate-z));
+        gap: 50px;
+        padding: 10px;
+    }
+
+    .GameHand {
+        width: 100%;
+        display: flex;
+        gap: 15px;
+        max-width: 380px;
+
+        &-slot {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+
+            outline: rgba(36, 255, 229, 0.4) 2px solid;
+            border-radius: 8px;
+            outline-offset: 3px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        &-self {
+            order: 99;
+
+            .GameHand-slot:hover {
+                > * {
+                    > * {
+                        transform: translateZ(150px);
+                        perspective: 0;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,5 +1,13 @@
 import { firebaseApp } from "../main.jsx";
-import { get, getDatabase, push, ref, remove, set } from "firebase/database";
+import {
+    get,
+    getDatabase,
+    push,
+    ref,
+    remove,
+    set,
+    update,
+} from "firebase/database";
 
 export function getFirebaseRef(path: string) {
     const db = getDatabase(firebaseApp);
@@ -10,8 +18,12 @@ export function getFirebaseValue<T>(path: string) {
     return get(getFirebaseRef(path));
 }
 
-export function updateFirebaseValue<T>(path: string, value: T) {
+export function setFirebaseValue<T>(path: string, value: T) {
     return set(getFirebaseRef(path), value);
+}
+
+export function updateFirebaseValue<T>(path: string, value: T) {
+    return update(getFirebaseRef(path), value);
 }
 
 export async function pushFirebaseValue<T>(path: string, value: T) {

@@ -1,4 +1,6 @@
-export type CardModel = {
+import type { WithId } from "./withId.model.ts";
+
+export type CardModel = WithId<{
     id: string;
     name: string;
     image: string;
@@ -11,4 +13,4 @@ export type CardModel = {
     };
     description: string;
     basePrice: number;
-};
+}>;

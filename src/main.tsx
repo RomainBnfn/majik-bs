@@ -12,6 +12,8 @@ import { GoogleAuthProvider } from "firebase/auth";
 import CardGlobalContextProvider from "./globalContexts/CardGlobalContext/CardGlobalContextProvider.tsx";
 import GameSettingGlobalContextProvider from "./globalContexts/GameSettingGlobalContext/GameSettingGlobalContextProvider.tsx";
 import AuthGlobalContextProvider from "./globalContexts/AuthGlobalContext/AuthGlobalContextProvider.tsx";
+import GamePage from "./pages/GamePage/GamePage.tsx";
+import GameContextProvider from "./pages/GamePage/contexts/GameContextProvider.tsx";
 
 export const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseAuthProvider = new GoogleAuthProvider();
@@ -36,6 +38,14 @@ const router = createBrowserRouter([
             {
                 path: "/deck/:id",
                 element: <DeckPage />,
+            },
+            {
+                path: "/game/:id",
+                element: (
+                    <GameContextProvider>
+                        <GamePage />
+                    </GameContextProvider>
+                ),
             },
             {
                 path: "/",

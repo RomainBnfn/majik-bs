@@ -3,4 +3,5 @@ export const FIREBASE_PATHS = {
     decks: "decks",
     gameSettings: "gameSettings",
     users: "users",
+    games: "games",
 } as const;
