@@ -1,8 +1,7 @@
 .GameBoard {
-    --transaaaa: 120px;
     display: flex;
     flex-direction: column;
-    perspective: var(--transaaaa);
+    perspective: 200px;
     background-color: #8dbaea;
 
     &-content {
@@ -16,7 +15,7 @@
         background-color: #4f84be;
         transform: rotateX(var(--angle)) translateY(var(--translate-y))
             translateZ(var(--translate-z));
-        gap: 50px;
+        gap: 80px;
         padding: 10px;
     }
 
@@ -49,6 +48,18 @@
                     }
                 }
             }
+        }
+    }
+
+    .GamePlayerStatistic {
+        position: absolute;
+
+        &-self {
+            bottom: 0;
+        }
+
+        &:not(&-self) {
+            top: 0;
         }
     }
 }
