@@ -22,9 +22,9 @@ export const attackWithCard = (game: GameModel, card: CardModel) => {
     return updateFirebaseValue(`${FIREBASE_PATHS.games}/${game._id}`, updates);
 };
 
-export const defenseWithCard = async (
+export const defense = async (
     game: GameModel,
-    card: CardModel,
+    card: CardModel | undefined,
     attackingCard: CardModel,
 ) => {
     const defendingPlayer = getOpponent(game, game.currentPlayerId);
@@ -33,15 +33,19 @@ export const defenseWithCard = async (
     const atkId = game.currentPlayerId;
 
     const updates = {
-        [`players/${defId}/discardCardIds/${card._id}`]: card._id,
         [`players/${atkId}/discardCardIds/${attackingCard._id}`]:
             attackingCard._id,
-        [`players/${defId}/inHandCardIds/${card._id}`]: null,
+
         [`players/${atkId}/inHandCardIds/${attackingCard._id}`]: null,
     };
-    if (attackingCard.attack > card.defense) {
+    if (card) {
+        updates[`players/${defId}/discardCardIds/${card._id}`] = card._id;
+        updates[`players/${defId}/inHandCardIds/${card._id}`] = null;
+    }
+    if (!card || attackingCard.attack > card.defense) {
         updates[`players/${defId}/health`] = defendingPlayer.health - 1;
     }
+
     await updateFirebaseValue(`${FIREBASE_PATHS.games}/${game._id}/`, updates);
     const updatedGame = await getFirebaseValue(
         `${FIREBASE_PATHS.games}/${game._id}`,

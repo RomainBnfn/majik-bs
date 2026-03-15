@@ -5,6 +5,7 @@ import { createContext, useContext } from "react";
 export type GameContextValue = {
     game: GameModel;
     onClickOnCard(c: CardModel): void;
+    onSkipDefense(): void;
     isLoggedPlayerTurn: boolean;
     shouldSelectCard: boolean;
 };
@@ -12,6 +13,9 @@ export type GameContextValue = {
 export const GameContext = createContext<GameContextValue>({
     game: {} as GameModel,
     onClickOnCard(c: CardModel) {
+        //
+    },
+    onSkipDefense() {
         //
     },
     isLoggedPlayerTurn: false,

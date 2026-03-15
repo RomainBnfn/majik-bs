@@ -1,65 +1,156 @@
-.GameBoard {
+.GamePage {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    perspective: 200px;
+    justify-content: center;
+    align-items: center;
     background-color: #8dbaea;
+}
+
+.GameBoard {
+    --perspective: 200px;
+
+    display: flex;
+    flex-direction: column;
+    perspective: var(--perspective);
+    margin: -10px;
 
     &-content {
         --angle: 15deg;
-        --translate-z: -35px;
-        --translate-y: -60px;
+        --translate-z: -35px; // todo animation
+        --translate-y: -75px;
+
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
         background-color: #4f84be;
         transform: rotateX(var(--angle)) translateY(var(--translate-y))
             translateZ(var(--translate-z));
-        gap: 80px;
-        padding: 10px;
-    }
+        justify-content: center;
+        align-items: center;
 
-    .GameHand {
-        width: 100%;
-        display: flex;
-        gap: 15px;
-        max-width: 380px;
-
-        &-slot {
-            flex: 1;
+        &-background {
+            position: absolute;
             display: flex;
-            flex-direction: column;
-
-            outline: rgba(36, 255, 229, 0.4) 2px solid;
-            border-radius: 8px;
-            outline-offset: 3px;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
             justify-content: center;
             align-items: center;
+            color: rgba(255, 244, 202, 0.2);
+            svg {
+                font-size: 300px;
+            }
         }
 
-        &-self {
-            order: 99;
-
-            .GameHand-slot:hover {
-                > * {
-                    > * {
-                        transform: translateZ(150px);
-                        perspective: 0;
-                    }
-                }
-            }
+        &-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+            padding: 10px;
         }
     }
 
     .GamePlayerStatistic {
         position: absolute;
+        width: 100%;
+        display: flex;
+        justify-content: center;
 
         &-self {
             bottom: 0;
+            transform: translateY(-180%);
         }
 
         &:not(&-self) {
             top: 0;
+            transform: translateY(50%);
         }
+    }
+}
+
+.GameHand {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+
+    &-slot {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: var(--card-width);
+        min-height: var(--card-height);
+        padding: 3px 6px;
+        outline: rgba(36, 255, 229, 0.4) 2px solid;
+        border-radius: 12px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &-self {
+        order: 99;
+
+        .GameHand-slot:hover {
+            > * {
+                > * {
+                    transform: translateZ(150px);
+                    perspective: 0;
+                }
+            }
+        }
+    }
+}
+
+.CardDrawn {
+    flex-shrink: 0;
+    position: relative;
+    perspective: var(--perspective);
+    min-width: var(--card-width);
+    min-height: var(--card-height);
+    padding: 5px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    outline: 4px #ffe1ab solid;
+    outline-offset: 1px;
+    border-radius: 12px;
+
+    &-self {
+        order: 5;
+    }
+
+    &-card-wrapper {
+        position: absolute;
+        --x-step: 1px;
+        --y-step: -2px;
+        --z-step: 1px;
+
+        @for $i from 1 through 20 {
+            &:nth-of-type(#{$i}) {
+                transform: translateZ(calc(var(--z-step) * ($i - 1)))
+                    translateY(calc(var(--y-step) * ($i - 1)))
+                    translateX(calc(var(--x-step) * ($i - 1)));
+                z-index: $i;
+            }
+        }
+    }
+
+    &:not(&-self) {
+        order: -1;
+        .CardDrawn-card-wrapper {
+            --x-step: -1px;
+        }
+    }
+}
+
+.GameCurrentPhase {
+    position: absolute;
+    top: 50%;
+    text-align: center;
+    font-size: 20px;
+    transform: translateY(-50%);
+
+    b {
+        font-weight: bold;
     }
 }

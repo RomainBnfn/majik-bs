@@ -1,20 +1,10 @@
 import type { TurnPhaseType } from "../enums/TurnPhaseType.enum.ts";
 import type { ListObject } from "./listObject.model.ts";
 import type { WithId } from "./withId.model.ts";
-
-export type PlayerGameModel = WithId<{
-    deckCardIds: string[];
-    discardCardIds: string[];
-    inHandCardIds: string[];
-    health: number;
-}>;
-
-export type FirebasePlayerGameModel = {
-    deckCardIds: ListObject<string>;
-    discardCardIds: ListObject<string>;
-    inHandCardIds: ListObject<string>;
-    heath: number;
-};
+import type {
+    FirebasePlayerGameModel,
+    PlayerGameModel,
+} from "./playerGame.model.ts";
 
 export type GameModel = WithId<{
     players: WithId<PlayerGameModel>[];

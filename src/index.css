@@ -44,6 +44,9 @@ a {
 
     box-sizing: border-box;
 
+    --card-width: 100px;
+    --card-height: 150px;
+
     --color-text: #6b6375;
 
     --sans: system-ui, "Segoe UI", Roboto, sans-serif;

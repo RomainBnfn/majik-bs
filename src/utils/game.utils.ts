@@ -1,5 +1,6 @@
-import { type GameModel, type PlayerGameModel } from "../models/game.model.ts";
+import { type GameModel } from "../models/game.model.ts";
 import { getRandomInt } from "./random.utils.ts";
+import type { PlayerGameModel } from "../models/playerGame.model.ts";
 
 export const getPlayer = (game: GameModel, playerId: string) => {
     return game.players.find((p) => p._id == playerId);
@@ -20,8 +21,8 @@ export const getAvailableCardIds = (p: PlayerGameModel) => {
     ]);
 };
 
-export const filterCardNotIn = (deckCardIds: string[], aaa: string[]) => {
-    return deckCardIds.filter((c) => !aaa.includes(c));
+export const filterCardNotIn = (deckCardIds: string[], excludes: string[]) => {
+    return deckCardIds.filter((c) => !excludes.includes(c));
 };
 
 export const getRandomAvailableCardIds = (

@@ -2,10 +2,10 @@ import classNames from "classnames";
 import Card from "../../../components/Card/Card.tsx";
 import { useGame } from "../contexts/gameContext.tsx";
 import { useAuth } from "../../../globalContexts/AuthGlobalContext/AuthGlobalContext.tsx";
-import type { PlayerGameModel } from "../../../models/game.model.ts";
 import { useCards } from "../../../globalContexts/CardGlobalContext/CardGlobalContext.tsx";
 import { useGameSettingCards } from "../../../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
 import { TurnPhaseTypes } from "../../../enums/TurnPhaseType.enum.ts";
+import type { PlayerGameModel } from "../../../models/playerGame.model.ts";
 
 type GameHandProps = {
     player: PlayerGameModel;
