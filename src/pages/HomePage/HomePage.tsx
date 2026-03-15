@@ -4,7 +4,7 @@ import { getAuth, signInWithPopup } from "firebase/auth";
 import { firebaseApp, firebaseAuthProvider } from "../../main.tsx";
 import {
     getFirebaseValue,
-    updateFirebaseValue,
+    setFirebaseValue,
 } from "../../services/firebase.service.ts";
 import { FIREBASE_PATHS } from "../../constants/firebasePaths.ts";
 import { useAuth } from "../../globalContexts/AuthGlobalContext/AuthGlobalContext.tsx";
@@ -20,7 +20,7 @@ const HomePage = () => {
                 getFirebaseValue(`${FIREBASE_PATHS.users}/${user.uid}`).then(
                     async (r) => {
                         if (!r.exists()) {
-                            await updateFirebaseValue(
+                            await setFirebaseValue(
                                 `${FIREBASE_PATHS.users}/${user.uid}`,
                                 {
                                     name: user.displayName,
@@ -54,6 +54,7 @@ const HomePage = () => {
                 <>
                     Hello {user?.displayName}
                     <Link to={"/decks"}>Decks</Link>
+                    <Link to={"/game/zihLJHBbLbjl"}>Game!!!</Link>
                 </>
             )}
         </>

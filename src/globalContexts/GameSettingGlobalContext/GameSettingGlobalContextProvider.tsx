@@ -6,11 +6,14 @@ import { useFirebaseValues } from "../../hooks/useFirebaseValues.ts";
 import { FIREBASE_PATHS } from "../../constants/firebasePaths.ts";
 
 const GameSettingGlobalContextProvider = ({ children }) => {
-    const [settings, areGameSettings] =
-        useFirebaseValues<GameSettingGlobalValue>(FIREBASE_PATHS.gameSettings, {
+    const [settings] = useFirebaseValues<GameSettingGlobalValue>(
+        FIREBASE_PATHS.gameSettings,
+        {
             maxCard: 0,
             maxPrice: 0,
-        });
+            cardInHand: 0,
+        },
+    );
     return (
         <GameSettingGlobalContext value={settings}>
             {children}

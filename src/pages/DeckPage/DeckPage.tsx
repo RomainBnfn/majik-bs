@@ -16,7 +16,7 @@ import { FunctionComponent, useState } from "react";
 import SortingButton from "../../components/SortingButton/SortingButton.tsx";
 import { IconButton, TextField } from "@mui/material";
 import type { DeckModel } from "../../models/deck.model.ts";
-import { updateFirebaseValue } from "../../services/firebase.service.ts";
+import { setFirebaseValue } from "../../services/firebase.service.ts";
 import DeckContent from "../../components/DeckContent/DeckContent.tsx";
 import RoundStatistic from "../../components/RoundStatistic/RoundStatistic.tsx";
 import { Link, useParams } from "react-router";
@@ -53,14 +53,14 @@ const DeckPage = () => {
 
     const setSelectedCardIds = (getValues: (p) => string[]) => {
         const newValues = getValues(selectedCardIds);
-        updateFirebaseValue(
+        setFirebaseValue(
             `${deckPath}/cardIds`,
             newValues.reduce((o, id, index) => ({ ...o, [id]: index }), {}),
         );
     };
 
     const unselectAll = () => {
-        updateFirebaseValue(`${deckPath}/cardIds`, "");
+        setFirebaseValue(`${deckPath}/cardIds`, "");
     };
 
     const selectedCards = selectedCardIds
@@ -119,7 +119,7 @@ const DeckPage = () => {
                             variant="filled"
                             value={decks?.name ?? ""}
                             onChange={(e) => {
-                                updateFirebaseValue(
+                                setFirebaseValue(
                                     `${deckPath}/name`,
                                     e.target.value,
                                 );
