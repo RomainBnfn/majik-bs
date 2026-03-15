@@ -1,11 +1,8 @@
 import { useGame } from "../contexts/gameContext.tsx";
-import { useAuth } from "../../../globalContexts/AuthGlobalContext/AuthGlobalContext.tsx";
 import { getPlayer } from "../../../utils/game.utils.ts";
 
 const GameCurrentPhase = () => {
-    const { user } = useAuth();
     const { game, shouldSelectCard, hasStarted } = useGame();
-    const isAA = game.currentPlayerId === user?.uid;
 
     const winner = game.winnerPlayerId
         ? getPlayer(game, game.winnerPlayerId)
@@ -20,7 +17,15 @@ const GameCurrentPhase = () => {
     }
     if (!hasStarted) {
         return (
-            <div className={"GameCurrentPhase"}>Waiting for a player...</div>
+            <div className={"GameCurrentPhase"}>
+                <div>Waiting for a player...</div>
+                <div>
+                    Invitation code:
+                    <b className={"GameCurrentPhase-invitation-code"}>
+                        {game.invitationCode}
+                    </b>
+                </div>
+            </div>
         );
     }
     return (

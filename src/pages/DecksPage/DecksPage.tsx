@@ -18,20 +18,8 @@ const DecksPage = () => {
         return <Navigate to={"/"} />;
     }
     return (
-        <>
+        <div className={"DecksPage"}>
             <Link to={"/"}>Back</Link>
-            {userDecks.map((d) => (
-                <Link to={`/deck/${d._id}`} key={d._id}>
-                    <DeckPreview
-                        deck={d}
-                        onDelete={() => {
-                            removeFirebaseElement(
-                                `${FIREBASE_PATHS.decks}/${d._id}`,
-                            );
-                        }}
-                    />
-                </Link>
-            ))}
             <Button
                 onClick={() => {
                     pushFirebaseValue(FIREBASE_PATHS.decks, {
@@ -45,7 +33,22 @@ const DecksPage = () => {
             >
                 Add
             </Button>
-        </>
+            <div className={"DecksPage-list"}>
+                {userDecks.map((d) => (
+                    <Link to={`/deck/${d._id}`} key={d._id}>
+                        <DeckPreview
+                            deck={d}
+                            onDelete={() => {
+                                removeFirebaseElement(
+                                    `${FIREBASE_PATHS.decks}/${d._id}`,
+                                );
+                            }}
+                            canDelete={true}
+                        />
+                    </Link>
+                ))}
+            </div>
+        </div>
     );
 };
 

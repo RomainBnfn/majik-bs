@@ -1,5 +1,5 @@
 import "./GamesPage.scss";
-import { Link, Navigate } from "react-router";
+import { Link, Navigate, useNavigate } from "react-router";
 import {
     createGame,
     getAllPlayerGames,
@@ -14,6 +14,8 @@ import { fromObjectToList } from "../../utils/firebase.utils.ts";
 import type { GameModel } from "../../models/game.model.ts";
 import { transformGameResponse } from "../GamePage/contexts/GameContextProvider.tsx";
 import { useDecks } from "../../globalContexts/DeckGlobalContext/DeckGlobalContext.tsx";
+import { useGetIsDeckValid } from "../../utils/card.utils.ts";
+import DeckPreview from "../../components/DeckPreview/DeckPreview.tsx";
 
 const GamesPage = () => {
     const { user } = useAuth();
@@ -21,15 +23,19 @@ const GamesPage = () => {
     const [invitationCode, setInvitationCode] = useState("");
     const [games, setGames] = useState<GameModel[]>([]);
     const { userDecks } = useDecks();
+    const isValid = useGetIsDeckValid();
+    const validDecks = userDecks.filter(isValid);
     const [selectedDeckId, setSelectedDeckId] = useState<string | undefined>(
-        userDecks[0]?._id,
+        validDecks[0]?._id,
     );
+    const navigate = useNavigate();
+    const nonTerminatedGames = games.filter((g) => !g.winnerPlayerId);
 
     useEffect(() => {
-        if (!selectedDeckId && userDecks.length) {
-            setSelectedDeckId(userDecks[0]._id);
+        if (!selectedDeckId && validDecks.length) {
+            setSelectedDeckId(validDecks[0]._id);
         }
-    }, [selectedDeckId, userDecks]);
+    }, [selectedDeckId, validDecks]);
 
     useEffect(() => {
         if (!user) {
@@ -48,7 +54,7 @@ const GamesPage = () => {
         return () => {
             unsubscribe();
         };
-    }, []);
+    }, [user]);
 
     if (!user) {
         return <Navigate to={"/"} />;
@@ -57,20 +63,18 @@ const GamesPage = () => {
         <div>
             <Link to={"/"}>Back</Link>
             GAMES
-            {userDecks.map((d) => (
-                <div
-                    className={d._id == selectedDeckId ? "DeckSelected" : ""}
-                    onClick={() => {
-                        setSelectedDeckId(d._id);
-                    }}
-                >
-                    Deck {d.name} ({Object.keys(d.cardIds).length})
-                </div>
+            {validDecks.map((d) => (
+                <DeckPreview
+                    deck={d}
+                    active={d._id == selectedDeckId}
+                    canDelete={false}
+                    onClick={() => setSelectedDeckId(d._id)}
+                />
             ))}
             {!!selectedDeckId && (
                 <>
                     <div>
-                        {games.map((g) => (
+                        {nonTerminatedGames.map((g) => (
                             <div>
                                 <Link to={`/game/${g._id}`}>
                                     Game ${g.invitationCode}
@@ -83,7 +87,14 @@ const GamesPage = () => {
                             if (!user || !selectedDeckId) {
                                 return;
                             }
-                            createGame(user, selectedDeckId, maxHealth);
+                            createGame(user, selectedDeckId, maxHealth).then(
+                                (r) => {
+                                    if (r?.key) {
+                                        console.log("ke", r);
+                                        navigate(`/game/${r.key}`);
+                                    }
+                                },
+                            );
                         }}
                     >
                         Create game
@@ -105,7 +116,11 @@ const GamesPage = () => {
                                     invitationCode,
                                     selectedDeckId,
                                     maxHealth,
-                                );
+                                ).then((g) => {
+                                    if (g) {
+                                        navigate(`/game/${g._id}`);
+                                    }
+                                });
                             }}
                         >
                             Join

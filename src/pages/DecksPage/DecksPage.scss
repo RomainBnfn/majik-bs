@@ -1,0 +1,13 @@
+.DecksPage {
+    display: flex;
+    flex-direction: column;
+
+    &-list {
+        overflow-y: auto;
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+}

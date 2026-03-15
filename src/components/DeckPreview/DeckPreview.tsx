@@ -2,33 +2,56 @@ import "./DeckPreview.scss";
 import type { DeckModel } from "../../models/deck.model.ts";
 import RoundStatistic from "../RoundStatistic/RoundStatistic.tsx";
 import { DeleteForever, Style } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { Card, IconButton } from "@mui/material";
 import { useGameSettingCards } from "../../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
+import classNames from "classnames";
+import { useIsDeckValid } from "../../utils/card.utils.ts";
 
 type DeckPreviewProps = {
     deck: DeckModel;
-    onDelete(): void;
+    onDelete?(): void;
+    onClick?(): void;
+    canDelete?: boolean;
+    active?: boolean;
 };
-const DeckPreview = ({ deck, onDelete }: DeckPreviewProps) => {
+const DeckPreview = ({
+    deck,
+    onDelete,
+    onClick,
+    active,
+    canDelete,
+}: DeckPreviewProps) => {
     const { maxCard } = useGameSettingCards();
+    const isValid = useIsDeckValid(deck);
+
     return (
-        <div className={"DeckPreview"}>
-            {deck.name}
+        <Card
+            className={classNames(
+                "DeckPreview",
+                active && "DeckPreview-active",
+                !isValid && "DeckPreview-invalid",
+            )}
+            variant="outlined"
+            onClick={onClick}
+        >
+            <span className={"DeckPreview-name"}>{deck.name}</span>
             <RoundStatistic
                 value={`${Object.keys(deck.cardIds).length}/${maxCard}`}
                 type={"card"}
                 icon={<Style />}
             />
-            <IconButton
-                onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    onDelete();
-                }}
-            >
-                <DeleteForever />
-            </IconButton>
-        </div>
+            {canDelete && (
+                <IconButton
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        onDelete?.();
+                    }}
+                >
+                    <DeleteForever />
+                </IconButton>
+            )}
+        </Card>
     );
 };
 
