@@ -26,10 +26,14 @@ const GameBoard = () => {
                         />
                     ))}
                 </div>
-                {game.players?.map((p) => (
+                {[...new Array(2).keys()].map((_, i) => (
                     <CardDrawn
-                        cardIds={getAvailableCardIds(p)}
-                        isSelf={p._id == user?.uid}
+                        cardIds={
+                            game.players?.[i]
+                                ? getAvailableCardIds(game.players[i])
+                                : []
+                        }
+                        isSelf={game.players?.[i]?._id == user?.uid}
                     />
                 ))}
                 <GameCurrentPhase />

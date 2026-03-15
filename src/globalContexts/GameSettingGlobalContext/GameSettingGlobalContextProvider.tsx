@@ -10,6 +10,7 @@ const GameSettingGlobalContextProvider = ({ children }) => {
         FIREBASE_PATHS.gameSettings,
         {
             maxCard: 0,
+            minCard: 0,
             maxHealth: 0,
             maxPrice: 0,
             cardInHand: 0,

@@ -16,9 +16,8 @@ const GamePage = () => {
     }
     return (
         <div className={"GamePage"}>
-            <Link className={"GamePage-navigate"} to={"/"}>
+            <Link className={"GamePage-navigate"} to={"/games/"}>
                 <Button>Back</Button>
-                Invitation code: {game.invitationCode}
             </Link>
             <GameBoard />
         </div>

@@ -1,6 +1,8 @@
 import type { BrawlerModel } from "../models/brawler.model.ts";
 import type { CardModel } from "../models/card.model.ts";
 import { getRandomInt } from "./random.utils.ts";
+import type { DeckModel } from "../models/deck.model.ts";
+import { useGameSettingCards } from "../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
 
 const MAX_STATISTIC = 10;
 const MIN_STATISTIC = 1;
@@ -41,4 +43,17 @@ export const transformBrawlerToCard = (
             ...getRandomAttackDefense(b.rarity.id),
         };
     });
+};
+
+export const useGetIsDeckValid = () => {
+    return (deck: DeckModel) => {
+        const { maxCard, minCard } = useGameSettingCards();
+        const cards = Object.keys(deck.cardIds).length;
+        return minCard <= cards && cards <= maxCard;
+    };
+};
+
+export const useIsDeckValid = (deck: DeckModel) => {
+    const isDeckValid = useGetIsDeckValid();
+    return isDeckValid(deck);
 };

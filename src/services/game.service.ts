@@ -172,6 +172,7 @@ export const joinGame = async (
         isStarted: true,
     });
     await startGame(game._id);
+    return game;
 };
 
 export const startGame = async (gameId: string) => {
