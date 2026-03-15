@@ -8,13 +8,13 @@ import { TurnPhaseTypes } from "../../../enums/TurnPhaseType.enum.ts";
 import type { PlayerGameModel } from "../../../models/playerGame.model.ts";
 
 type GameHandProps = {
-    player: PlayerGameModel;
+    player: PlayerGameModel | undefined;
 };
 const GameHand = ({ player }: GameHandProps) => {
     const { game, shouldSelectCard } = useGame();
     const { getCardById } = useCards();
     const { user } = useAuth();
-    const isUs = player._id == user?.uid;
+    const isUs = player?._id == user?.uid;
 
     const { cardInHand } = useGameSettingCards();
     const { onClickOnCard } = useGame();
@@ -22,8 +22,8 @@ const GameHand = ({ player }: GameHandProps) => {
     return (
         <div className={classNames("GameHand", isUs && "GameHand-self")}>
             {[...new Array(cardInHand).keys()].map((i) => {
-                const c = player.inHandCardIds[i];
-                const card = getCardById(c);
+                const c = player?.inHandCardIds[i];
+                const card = c ? getCardById(c) : undefined;
                 return (
                     <div className={"GameHand-slot"}>
                         {card && (
@@ -36,8 +36,9 @@ const GameHand = ({ player }: GameHandProps) => {
                                 }
                                 reverse={
                                     !isUs &&
-                                    (game.currentPhase ===
-                                        TurnPhaseTypes.Attack ||
+                                    (!shouldSelectCard ||
+                                        game.currentPhase ===
+                                            TurnPhaseTypes.Attack ||
                                         game.currentSelectedCardId !== card._id)
                                 }
                                 onClick={() =>

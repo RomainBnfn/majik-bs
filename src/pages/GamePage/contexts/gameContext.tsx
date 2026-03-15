@@ -8,6 +8,7 @@ export type GameContextValue = {
     onSkipDefense(): void;
     isLoggedPlayerTurn: boolean;
     shouldSelectCard: boolean;
+    hasStarted: boolean;
 };
 
 export const GameContext = createContext<GameContextValue>({
@@ -20,6 +21,7 @@ export const GameContext = createContext<GameContextValue>({
     },
     isLoggedPlayerTurn: false,
     shouldSelectCard: false,
+    hasStarted: false,
 });
 
 export const useGame = () => {

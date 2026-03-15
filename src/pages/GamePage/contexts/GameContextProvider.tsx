@@ -43,10 +43,14 @@ const GameContextProvider = ({ children }) => {
     const isLoggedPlayerTurn = gameState.currentPlayerId == user?.uid;
 
     const shouldSelectCard =
-        (isLoggedPlayerTurn &&
+        !gameState.winnerPlayerId &&
+        ((isLoggedPlayerTurn &&
             gameState.currentPhase === TurnPhaseTypes.Attack) ||
-        (!isLoggedPlayerTurn &&
-            gameState.currentPhase === TurnPhaseTypes.Defense);
+            (!isLoggedPlayerTurn &&
+                gameState.currentPhase === TurnPhaseTypes.Defense));
+
+    const hasStarted =
+        !gameState.winnerPlayerId && gameState.players?.length === 2;
 
     const onClickOnCard = (c: CardModel) => {
         if (!shouldSelectCard) {
@@ -88,6 +92,7 @@ const GameContextProvider = ({ children }) => {
                 onSkipDefense,
                 isLoggedPlayerTurn,
                 shouldSelectCard,
+                hasStarted,
             }}
         >
             {children}
