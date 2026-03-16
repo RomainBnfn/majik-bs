@@ -1,9 +1,8 @@
 import "./GamePage.scss";
-import { Link, Navigate } from "react-router";
+import { Navigate } from "react-router";
 import { useAuth } from "../../globalContexts/AuthGlobalContext/AuthGlobalContext.tsx";
 import { useGame } from "./contexts/gameContext.tsx";
 import GameBoard from "./components/GameBoard.tsx";
-import { Button } from "@mui/material";
 
 const GamePage = () => {
     const { user } = useAuth();
@@ -16,9 +15,6 @@ const GamePage = () => {
     }
     return (
         <div className={"GamePage"}>
-            <Link className={"GamePage-navigate"} to={"/games/"}>
-                <Button>Back</Button>
-            </Link>
             <GameBoard />
         </div>
     );

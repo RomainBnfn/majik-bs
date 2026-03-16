@@ -8,7 +8,7 @@ import {
 import { useAuth } from "../../globalContexts/AuthGlobalContext/AuthGlobalContext.tsx";
 import { useGameSettingCards } from "../../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
 import { useEffect, useState } from "react";
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { onValue } from "firebase/database";
 import { fromObjectToList } from "../../utils/firebase.utils.ts";
 import type { GameModel } from "../../models/game.model.ts";
@@ -56,33 +56,44 @@ const GamesPage = () => {
         };
     }, [user]);
 
+    const handleJoinGame = () => {
+        if (!user || !selectedDeckId) {
+            return;
+        }
+        joinGame(user, invitationCode, selectedDeckId, maxHealth).then((g) => {
+            if (g) {
+                navigate(`/game/${g._id}`);
+            }
+        });
+    };
     if (!user) {
         return <Navigate to={"/"} />;
     }
     return (
-        <div>
-            <Link to={"/"}>Back</Link>
-            GAMES
-            {validDecks.map((d) => (
-                <DeckPreview
-                    deck={d}
-                    active={d._id == selectedDeckId}
-                    canDelete={false}
-                    onClick={() => setSelectedDeckId(d._id)}
-                />
-            ))}
+        <div className={"GamesPage"}>
             {!!selectedDeckId && (
                 <>
-                    <div>
-                        {nonTerminatedGames.map((g) => (
-                            <div>
-                                <Link to={`/game/${g._id}`}>
-                                    Game ${g.invitationCode}
-                                </Link>
-                            </div>
-                        ))}
+                    <div className={"Invitation-field"}>
+                        <TextField
+                            label="Invitation code"
+                            variant="filled"
+                            value={invitationCode}
+                            onChange={(e) => setInvitationCode(e.target.value)}
+                            onKeyUp={(e) => {
+                                if (e.key === "Enter") {
+                                    handleJoinGame();
+                                }
+                            }}
+                        />
+                        <Button
+                            onClick={() => {
+                                handleJoinGame();
+                            }}
+                        >
+                            Join
+                        </Button>
                     </div>
-                    <button
+                    <Button
                         onClick={() => {
                             if (!user || !selectedDeckId) {
                                 return;
@@ -98,35 +109,33 @@ const GamesPage = () => {
                         }}
                     >
                         Create game
-                    </button>
-                    <div>
-                        <TextField
-                            label="Invitation code"
-                            variant="filled"
-                            value={invitationCode}
-                            onChange={(e) => setInvitationCode(e.target.value)}
-                        />
-                        <button
-                            onClick={() => {
-                                if (!user || !selectedDeckId) {
-                                    return;
-                                }
-                                joinGame(
-                                    user,
-                                    invitationCode,
-                                    selectedDeckId,
-                                    maxHealth,
-                                ).then((g) => {
-                                    if (g) {
-                                        navigate(`/game/${g._id}`);
-                                    }
-                                });
-                            }}
-                        >
-                            Join
-                        </button>
-                    </div>
+                    </Button>
                 </>
+            )}
+            <div className={"GamesPage-decks"}>
+                <div>Selected deck</div>
+                <div className={"GamesPage-decks-list"}>
+                    {validDecks.map((d) => (
+                        <DeckPreview
+                            deck={d}
+                            active={d._id == selectedDeckId}
+                            canDelete={false}
+                            onClick={() => setSelectedDeckId(d._id)}
+                        />
+                    ))}
+                </div>
+            </div>
+            {!!selectedDeckId && (
+                <div>
+                    Active games
+                    {nonTerminatedGames.map((g) => (
+                        <div>
+                            <Link to={`/game/${g._id}`}>
+                                Game ${g.invitationCode}
+                            </Link>
+                        </div>
+                    ))}
+                </div>
             )}
         </div>
     );
