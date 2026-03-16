@@ -2,7 +2,7 @@
     --statistic-color: white;
     --font-size: 14px;
     --statistic-border-color: #e5e5e5;
-    --statistic-text-color: #ffffff;
+    --statistic-text-color: var(--color-text-light);
 
     font-size: var(--font-size);
     display: flex;
@@ -30,9 +30,11 @@
     }
 
     &-price {
-        --statistic-color: #cc9300;
+        --statistic-color: #d99b02;
     }
+
     &-card {
-        --statistic-color: #cc00b1;
+        --statistic-color: #ecaecb;
+        --statistic-text-color: var(--color-text);
     }
 }

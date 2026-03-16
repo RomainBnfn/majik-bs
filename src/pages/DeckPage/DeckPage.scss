@@ -1,26 +1,41 @@
-.Cards {
+.DeckPage {
+    flex: 1;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     height: 100%;
-    overflow-y: auto;
-    gap: 4px;
-    justify-content: center;
+    position: relative;
 
-    &-wrong-item {
-        animation: wiggle 0.5s ease-in-out;
-    }
-}
-
-.Header {
-    &-filters {
+    .Cards {
         display: flex;
-    }
-}
+        flex-wrap: wrap;
+        height: 100%;
+        overflow-y: auto;
+        gap: 4px;
+        justify-content: center;
+        position: relative;
 
-.Deck {
-    &-header {
-        display: flex;
-        background-color: #e2e2e2;
-        align-items: center;
+        &-wrong-item {
+            animation: wiggle 0.5s ease-in-out;
+        }
+
+        &-validate {
+            position: absolute !important;
+            right: 10px;
+            bottom: 10px;
+        }
+    }
+
+    .Header {
+        &-filters {
+            display: flex;
+        }
+    }
+
+    .Deck {
+        &-header {
+            display: flex;
+            background-color: #e2e2e2;
+            align-items: center;
+        }
     }
 }

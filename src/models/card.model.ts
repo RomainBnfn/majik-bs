@@ -13,4 +13,5 @@ export type CardModel = WithId<{
     };
     description: string;
     basePrice: number;
+    canBePicked?: boolean;
 }>;
