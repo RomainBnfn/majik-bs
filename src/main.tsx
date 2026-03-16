@@ -32,13 +32,22 @@ const Navbar = () => {
     return (
         <BottomNavigation showLabels value={pathname}>
             <BottomNavigationAction
-                label="/games"
+                label="Games"
+                value={"/games"}
                 component={Link}
                 to={"/games"}
                 icon={<Api />}
             />
             <BottomNavigationAction
-                label="/decks"
+                label="Home"
+                value={"/"}
+                component={Link}
+                to={"/"}
+                icon={<Api />}
+            />
+            <BottomNavigationAction
+                label="Decks"
+                value="/decks"
                 component={Link}
                 to={"/decks"}
                 icon={<Style />}

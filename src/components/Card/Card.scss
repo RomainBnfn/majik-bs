@@ -151,6 +151,16 @@
 
         &-statistic {
             flex: 1;
+
+            &-highlighted {
+                flex: 2;
+            }
+        }
+
+        &:has(&-statistic-highlighted) {
+            > :not(.Card-footer-statistic-highlighted) {
+                opacity: 0.4;
+            }
         }
     }
 }
