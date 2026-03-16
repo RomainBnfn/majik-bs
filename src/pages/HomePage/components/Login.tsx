@@ -35,7 +35,6 @@ const Login = () => {
                             displayName: user.displayName ?? "",
                             email: user.email ?? "",
                         });
-                        navigate("/decks");
                     },
                 );
                 result.operationType;

@@ -17,6 +17,7 @@ export type CardProps = {
     onClick?(): void;
     className?: string;
     onAnimationEnd?(): void;
+    highlightMode?: "attack" | "defense";
 };
 
 const Card = ({
@@ -27,6 +28,7 @@ const Card = ({
     reverse,
     className,
     onAnimationEnd,
+    highlightMode,
 }: CardProps) => {
     return (
         <div
@@ -48,7 +50,7 @@ const Card = ({
                 <div className={"Card-front"}>
                     <div className={"Card-header"}>
                         <RoundStatistic
-                            value={card.rarity.id}
+                            value={card.basePrice}
                             type={"price"}
                             icon={<RadioButtonChecked />}
                         />
@@ -57,13 +59,21 @@ const Card = ({
                     <div className={"Card-content"} />
                     <div className={"Card-footer"}>
                         <RoundStatistic
-                            className={"Card-footer-statistic"}
+                            className={classNames(
+                                "Card-footer-statistic",
+                                highlightMode === "attack" &&
+                                    "Card-footer-statistic-highlighted",
+                            )}
                             value={card.attack}
                             type={"attack"}
                             icon={<Whatshot />}
                         />
                         <RoundStatistic
-                            className={"Card-footer-statistic"}
+                            className={classNames(
+                                "Card-footer-statistic",
+                                highlightMode === "defense" &&
+                                    "Card-footer-statistic-highlighted",
+                            )}
                             value={card.defense}
                             type={"defense"}
                             icon={<Shield />}
