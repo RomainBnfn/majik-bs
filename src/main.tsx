@@ -1,9 +1,9 @@
-import "./index.css";
+import "./index.scss";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./assets/firebaseConfig.ts";
-import { createBrowserRouter, Outlet } from "react-router";
+import { createBrowserRouter, Link, Outlet, useLocation } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import DecksPage from "./pages/DecksPage/DecksPage.tsx";
 import DeckPage from "./pages/DeckPage/DeckPage.tsx";
@@ -16,9 +16,36 @@ import GamePage from "./pages/GamePage/GamePage.tsx";
 import GameContextProvider from "./pages/GamePage/contexts/GameContextProvider.tsx";
 import GamesPage from "./pages/GamesPage/GamesPage.tsx";
 import DeckGlobalContextProvider from "./globalContexts/DeckGlobalContext/DeckGlobalContextProvider.tsx";
+import { BottomNavigation, BottomNavigationAction } from "@mui/material";
+import { Api, Style } from "@mui/icons-material";
+import { useAuth } from "./globalContexts/AuthGlobalContext/AuthGlobalContext.tsx";
 
 export const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseAuthProvider = new GoogleAuthProvider();
+
+const Navbar = () => {
+    const { isLogged } = useAuth();
+    const { origin, pathname, ...rest } = useLocation();
+    if (!isLogged) {
+        return null;
+    }
+    return (
+        <BottomNavigation showLabels value={pathname}>
+            <BottomNavigationAction
+                label="/games"
+                component={Link}
+                to={"/games"}
+                icon={<Api />}
+            />
+            <BottomNavigationAction
+                label="/decks"
+                component={Link}
+                to={"/decks"}
+                icon={<Style />}
+            />
+        </BottomNavigation>
+    );
+};
 
 const router = createBrowserRouter([
     {
@@ -28,7 +55,12 @@ const router = createBrowserRouter([
                 <DeckGlobalContextProvider>
                     <CardGlobalContextProvider>
                         <GameSettingGlobalContextProvider>
-                            <Outlet />
+                            <div className={"App"}>
+                                <div className={"App-content"}>
+                                    <Outlet />
+                                </div>
+                                <Navbar />
+                            </div>
                         </GameSettingGlobalContextProvider>
                     </CardGlobalContextProvider>
                 </DeckGlobalContextProvider>

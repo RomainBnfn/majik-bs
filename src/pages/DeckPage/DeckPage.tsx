@@ -19,7 +19,7 @@ import type { DeckModel } from "../../models/deck.model.ts";
 import { setFirebaseValue } from "../../services/firebase.service.ts";
 import DeckContent from "../../components/DeckContent/DeckContent.tsx";
 import RoundStatistic from "../../components/RoundStatistic/RoundStatistic.tsx";
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 import classNames from "classnames";
 import { useCards } from "../../globalContexts/CardGlobalContext/CardGlobalContext.tsx";
 import { useGameSettingCards } from "../../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
@@ -111,7 +111,6 @@ const DeckPage = () => {
 
     return (
         <>
-            <Link to={"/decks"}>Back</Link>
             <div className={"Header"}>
                 <div className={"Deck"}>
                     <div className={"Deck-header"}>

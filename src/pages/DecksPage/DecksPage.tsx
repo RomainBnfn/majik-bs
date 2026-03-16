@@ -19,7 +19,6 @@ const DecksPage = () => {
     }
     return (
         <div className={"DecksPage"}>
-            <Link to={"/"}>Back</Link>
             <Button
                 onClick={() => {
                     pushFirebaseValue(FIREBASE_PATHS.decks, {
