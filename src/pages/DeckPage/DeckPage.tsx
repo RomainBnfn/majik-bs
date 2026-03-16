@@ -5,7 +5,6 @@ import type { CardModel } from "../../models/card.model.ts";
 import Card from "../../components/Card/Card.tsx";
 import {
     CheckBox,
-    DeleteForever,
     RadioButtonChecked,
     Shield,
     Style,
@@ -13,17 +12,16 @@ import {
     Whatshot,
 } from "@mui/icons-material";
 import { FunctionComponent, useState } from "react";
+import { Link, useParams } from "react-router";
 import SortingButton from "../../components/SortingButton/SortingButton.tsx";
-import { IconButton, TextField } from "@mui/material";
+import { Fab, IconButton, TextField } from "@mui/material";
 import type { DeckModel } from "../../models/deck.model.ts";
 import { setFirebaseValue } from "../../services/firebase.service.ts";
 import DeckContent from "../../components/DeckContent/DeckContent.tsx";
 import RoundStatistic from "../../components/RoundStatistic/RoundStatistic.tsx";
-import { useParams } from "react-router";
 import classNames from "classnames";
 import { useCards } from "../../globalContexts/CardGlobalContext/CardGlobalContext.tsx";
 import { useGameSettingCards } from "../../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
-import { generateCardsFromBrawlers } from "../../services/cards.service.ts";
 
 type Sorting = "price" | "defense" | "attack";
 const SortingIcons: Record<Sorting, FunctionComponent> = {
@@ -40,7 +38,7 @@ const SortingKeys: Record<Sorting, keyof CardModel> = {
 const DeckPage = () => {
     const { id } = useParams();
     const { cards } = useCards();
-    const { maxPrice, maxCard } = useGameSettingCards();
+    const { maxPrice, maxCard, minCard } = useGameSettingCards();
 
     const deckPath = `${FIREBASE_PATHS.decks}/${id}`;
     const [decks, areDeckLoading] = useFirebaseValues<DeckModel>(deckPath, {});
@@ -68,10 +66,16 @@ const DeckPage = () => {
         .map((id) => cards.find((c) => c.id == id))
         .filter((c) => !!c);
 
-    const displayedCards = displayOnly ? selectedCards : cards;
+    const displayedCards = displayOnly
+        ? selectedCards
+        : cards.filter((c) => c.canBePicked !== false);
     //.filter((c) => !selectedCardIds.some((i) => i == c.id));
 
     const selectedPrice = selectedCards.reduce((t, c) => t + c.basePrice, 0);
+    const isValid =
+        minCard <= selectedCardIds.length &&
+        selectedCardIds.length <= maxCard &&
+        selectedPrice <= maxPrice;
 
     const Sorting = ({ type }: { type: Sorting }) => {
         return (
@@ -110,7 +114,7 @@ const DeckPage = () => {
     };
 
     return (
-        <>
+        <div className={"DeckPage"}>
             <div className={"Header"}>
                 <div className={"Deck"}>
                     <div className={"Deck-header"}>
@@ -135,13 +139,6 @@ const DeckPage = () => {
                             type={"card"}
                             icon={<Style />}
                         />
-                        <IconButton
-                            onClick={() => {
-                                unselectAll();
-                            }}
-                        >
-                            <DeleteForever />
-                        </IconButton>
                     </div>
                     <DeckContent
                         selectedCards={selectedCards}
@@ -198,14 +195,17 @@ const DeckPage = () => {
                         />
                     ))}
             </div>
-            <button
-                onClick={() => {
-                    generateCardsFromBrawlers();
-                }}
+            <Fab
+                className={"Cards-validate"}
+                variant="extended"
+                color={isValid ? "success" : undefined}
+                component={Link}
+                to={"/decks"}
             >
-                Reset
-            </button>
-        </>
+                <CheckBox />
+                Valider
+            </Fab>
+        </div>
     );
 };
 

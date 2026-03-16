@@ -71,11 +71,12 @@ const GamesPage = () => {
     }
     return (
         <div className={"GamesPage"}>
+            <h1>Vos parties</h1>
             {!!selectedDeckId && (
                 <>
                     <div className={"Invitation-field"}>
                         <TextField
-                            label="Invitation code"
+                            label="Rejoindre une partie"
                             variant="filled"
                             value={invitationCode}
                             onChange={(e) => setInvitationCode(e.target.value)}
@@ -93,6 +94,7 @@ const GamesPage = () => {
                             Join
                         </Button>
                     </div>
+                    <p>Or</p>
                     <Button
                         onClick={() => {
                             if (!user || !selectedDeckId) {
@@ -113,7 +115,7 @@ const GamesPage = () => {
                 </>
             )}
             <div className={"GamesPage-decks"}>
-                <div>Selected deck</div>
+                <h2>Deck actif</h2>
                 <div className={"GamesPage-decks-list"}>
                     {validDecks.map((d) => (
                         <DeckPreview
@@ -124,17 +126,26 @@ const GamesPage = () => {
                         />
                     ))}
                 </div>
+                {!validDecks.length && (
+                    <p>
+                        Commencez par créer un deck avant de créer ou rejoindre
+                        une partie
+                    </p>
+                )}
             </div>
-            {!!selectedDeckId && (
-                <div>
-                    Active games
-                    {nonTerminatedGames.map((g) => (
-                        <div>
-                            <Link to={`/game/${g._id}`}>
-                                Game ${g.invitationCode}
-                            </Link>
-                        </div>
-                    ))}
+            {!!selectedDeckId && !!nonTerminatedGames.length && (
+                <div className={"GamesPage-games"}>
+                    <h2>Active games</h2>
+                    <p>Reprendre une ancienne partie non terminée</p>
+                    <div className={"GamesPage-games-list"}>
+                        {nonTerminatedGames.map((g) => (
+                            <div>
+                                <Link to={`/game/${g._id}`}>
+                                    Game {g.invitationCode}
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
         </div>

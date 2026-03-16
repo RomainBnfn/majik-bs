@@ -47,7 +47,10 @@ a {
     --card-width: 100px;
     --card-height: 150px;
 
-    --color-text: #6b6375;
+    --color-text: #2a2a2c;
+    --color-text-light: #f5f5f5;
+
+    color: var(--color-text);
 
     --sans: system-ui, "Segoe UI", Roboto, sans-serif;
     --heading: system-ui, "Segoe UI", Roboto, sans-serif;
@@ -77,5 +80,14 @@ a {
         overflow-y: auto;
         display: flex;
         flex-direction: column;
+    }
+
+    h1 {
+        margin: 5px 0 10px;
+    }
+
+    p,
+    h2 {
+        margin: 0;
     }
 }
