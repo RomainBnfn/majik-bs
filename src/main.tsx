@@ -62,16 +62,28 @@ const router = createBrowserRouter([
                 element: <GamesPage />,
             },
             {
+                path: "*",
+                element: <HomePage />,
+            },
+            {
                 path: "/",
                 element: <HomePage />,
                 index: true,
             },
         ],
+        errorElement: () => {
+            <div>Error :/</div>;
+        },
     },
 ]);
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
-        <RouterProvider router={router} />
+        <RouterProvider
+            router={router}
+            onError={(e) => {
+                alert(JSON.stringify(e));
+            }}
+        />
     </StrictMode>,
 );
