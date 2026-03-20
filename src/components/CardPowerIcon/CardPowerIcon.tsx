@@ -4,7 +4,12 @@ import type { PowerEffectType } from "../../enums/PowerEffectType.enum.ts";
 import { PowerEffectTypes } from "../../enums/PowerEffectType.enum.ts";
 import type { FunctionComponent } from "react";
 import { useState } from "react";
-import { Favorite, HelpOutline, Sell } from "@mui/icons-material";
+import {
+    BrightnessHigh,
+    Favorite,
+    HelpOutline,
+    Sell,
+} from "@mui/icons-material";
 import { ClickAwayListener, Tooltip } from "@mui/material";
 
 export type CardPowerIconProps = {
@@ -16,6 +21,7 @@ const PowerIcons: Record<PowerEffectType, FunctionComponent> = {
     [PowerEffectTypes.RandomAttack]: HelpOutline,
     [PowerEffectTypes.RandomDefense]: HelpOutline,
     [PowerEffectTypes.Draw]: Sell,
+    [PowerEffectTypes.AttackOpponent]: BrightnessHigh,
 };
 
 const CardPowerDescription = ({ power }: { power: PowerModel }) => {

@@ -8,6 +8,7 @@ export const PowerEffectTypes = {
     GainTemporaryDefense: "GainTemporaryDefense",
     RandomAttack: "RandomAttack",
     RandomDefense: "RandomDefense",
+    AttackOpponent: "AttackOpponent",
 };
 
 export type PowerEffectType =
