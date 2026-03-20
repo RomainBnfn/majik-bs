@@ -17,7 +17,7 @@ const GameBoard = () => {
         <div className={"GameBoard"}>
             <div className={"GameBoard-content"}>
                 <div className={"GameBoard-content-background"}>
-                    <Adjust className={""} />
+                    <Adjust />
                 </div>
                 <div className={"GameBoard-content-cards"}>
                     {[...new Array(2).keys()].map((_, i) => (
