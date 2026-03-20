@@ -23,6 +23,7 @@ export const Rule1 = () => {
                 Majik-BS est un jeu de carte en tour par tour dans lequel deux
                 joueurs s'affrontent avec leur deck.
             </p>
+            <h2>Exemple de carte</h2>
             <Card className={"GameRules-card-example"} card={exampleCard} />
             <p>
                 Chaque carte possède une statistique d'attaque <Whatshot />, de
@@ -123,10 +124,6 @@ export const Rule4 = () => {
                 <li>
                     Lorsqu'un joueur n'a plus de carte dans sa pioche à son
                     tour, il pioche un robot (1/0)
-                </li>
-                <li>
-                    A la fin du {15}e tour, si aucun joueur n'est KO, celui avec
-                    le plus de HP gagne, sinon c'est une égalité
                 </li>
             </ul>
         </>
