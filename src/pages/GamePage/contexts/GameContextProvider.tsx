@@ -29,7 +29,8 @@ export const transformGameResponse = (
     ),
 });
 
-const valuesIfExists = (o): string[] => (o ? Object.values(o).map(String) : []);
+const valuesIfExists = (o): string[] =>
+    o ? Object.values(o ?? {}).map(String) : [];
 
 const GameContextProvider = ({ children }) => {
     const { id } = useParams();

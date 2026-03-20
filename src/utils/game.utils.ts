@@ -32,19 +32,27 @@ export const filterCardNotIn = (deckCardIds: string[], excludes: string[]) => {
 export const getRandomAvailableCardIds = (
     p: PlayerGameModel,
     maxCards: number,
+    cardToPick = maxCards,
+    defaultCardId = "e6c645e4-7882-4186-a003-9de8cee27e12",
 ): string[] => {
     const availableCards = getAvailableCardIds(p);
-    if (!availableCards.length) {
-        return [];
-    }
-    const toPickCards =
-        Math.min(maxCards, availableCards.length) - p.inHandCardIds.length;
+    const _cardToPick =
+        cardToPick + p.inHandCardIds.length > maxCards
+            ? maxCards - p.inHandCardIds.length
+            : cardToPick;
+    console.log("availableCards", availableCards);
     const cards: string[] = [];
-    while (cards.length < toPickCards) {
+    while (cards.length < _cardToPick) {
         const remainingAvailable = filterCardNotIn(availableCards, cards);
-        cards.push(
-            remainingAvailable[getRandomInt(remainingAvailable.length - 1)],
-        );
+        if (!remainingAvailable.length) {
+            cards.push(defaultCardId);
+            console.log("pick default");
+        } else {
+            cards.push(
+                remainingAvailable[getRandomInt(remainingAvailable.length)],
+            );
+            console.log("pick random");
+        }
     }
     return cards;
 };

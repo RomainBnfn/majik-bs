@@ -1,16 +1,7 @@
 import type { GameModel } from "../models/game.model.ts";
 import type { CardModel } from "../models/card.model.ts";
-import {
-    getOpponent,
-    getPlayer,
-    getRandomAvailableCardIds,
-} from "../utils/game.utils.ts";
-import {
-    getFirebaseRef,
-    getFirebaseValue,
-    pushFirebaseValue,
-    updateFirebaseValue,
-} from "./firebase.service.ts";
+import { getOpponent, getPlayer, getRandomAvailableCardIds } from "../utils/game.utils.ts";
+import { getFirebaseRef, getFirebaseValue, pushFirebaseValue, updateFirebaseValue } from "./firebase.service.ts";
 import { FIREBASE_PATHS } from "../constants/firebasePaths.ts";
 import { TurnPhaseTypes } from "../enums/TurnPhaseType.enum.ts";
 import { transformGameResponse } from "../pages/GamePage/contexts/GameContextProvider.tsx";
@@ -27,11 +18,6 @@ export const getGameById = (id: string) => {
 };
 
 export const attackWithCard = (game: GameModel, card: CardModel) => {
-    // if opponent has no card
-    const opponent = getOpponent(game, game.currentPlayerId);
-    if (!opponent.inHandCardIds?.length) {
-        // take damage and skip defense phase
-    }
     const updates = {};
     updates["currentPhase"] = TurnPhaseTypes.Defense;
     updates["currentSelectedCardId"] = card._id;
@@ -44,7 +30,9 @@ export const defense = async (
     attackingCard: CardModel,
 ) => {
     const defendingPlayer = getOpponent(game, game.currentPlayerId);
-
+    if (!defendingPlayer) {
+        return;
+    }
     const defId = defendingPlayer._id;
     const atkId = game.currentPlayerId;
 
@@ -78,12 +66,26 @@ export const defense = async (
     await startPlayerTurn(
         transformGameResponse(updatedGame.val(), game._id),
         defId,
+        !!card,
     );
 };
 
-export const startPlayerTurn = (game: GameModel, playerId: string) => {
+export const startPlayerTurn = (
+    game: GameModel,
+    playerId: string,
+    hasUsedCard: boolean,
+    defaultCardId = "e6c645e4-7882-4186-a003-9de8cee27e12",
+) => {
     const player = getPlayer(game, playerId);
-    const availableCardIds = getRandomAvailableCardIds(player, 3);
+    if (!player) {
+        return;
+    }
+    const availableCardIds = getRandomAvailableCardIds(
+        player,
+        3,
+        hasUsedCard ? 1 : 2,
+        defaultCardId,
+    );
     const updates = {
         ...availableCardIds.reduce(
             (o, i) => ({ ...o, [`players/${playerId}/inHandCardIds/${i}`]: i }),
@@ -181,7 +183,7 @@ export const startGame = async (gameId: string) => {
         return;
     }
     const game = transformGameResponse(firebaseGame.val(), gameId);
-    const startingPlayer = game.players[getRandomInt(game.players.length - 1)];
+    const startingPlayer = game.players[getRandomInt(game.players.length)];
 
     const updates = {
         currentPlayerId: startingPlayer._id,

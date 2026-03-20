@@ -1,5 +1,6 @@
 import { useGame } from "../contexts/gameContext.tsx";
 import { getPlayer } from "../../../utils/game.utils.ts";
+import { TurnPhaseTypes } from "../../../enums/TurnPhaseType.enum.ts";
 
 const GameCurrentPhase = () => {
     const { game, shouldSelectCard, hasStarted } = useGame();
@@ -31,7 +32,12 @@ const GameCurrentPhase = () => {
     return (
         <div className={"GameCurrentPhase"}>
             <div>Tour {game.currentTurn}</div>
-            <b>{shouldSelectCard && "A vous de jouer !"}</b>
+            <b>
+                {shouldSelectCard &&
+                    (game.currentPhase === TurnPhaseTypes.Attack
+                        ? "A vous d'attaquer!"
+                        : "A vous de défendre!")}
+            </b>
         </div>
     );
 };

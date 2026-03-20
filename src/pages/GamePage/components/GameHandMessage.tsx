@@ -10,7 +10,7 @@ const GameHandMessage = ({ player }: GameHandMessageProps) => {
     const { game, shouldSelectCard } = useGame();
     const { user } = useAuth();
     const isUs = user?.uid === player?._id;
-    if (isUs || shouldSelectCard || game.winnerPlayerId) {
+    if (isUs || shouldSelectCard || game.winnerPlayerId || !game.isStarted) {
         return null;
     }
     return (
