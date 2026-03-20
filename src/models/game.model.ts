@@ -5,6 +5,10 @@ import type {
     FirebasePlayerGameModel,
     PlayerGameModel,
 } from "./playerGame.model.ts";
+import type {
+    FirebasePreviousTurn,
+    PreviousTurn,
+} from "./previousTurn.model.ts";
 
 export type GameModel = WithId<{
     players: WithId<PlayerGameModel>[];
@@ -15,8 +19,10 @@ export type GameModel = WithId<{
     winnerPlayerId?: string;
     isStarted: boolean;
     invitationCode: string;
+    previousTurns: PreviousTurn[];
 }>;
 
 export type FirebaseGameModel = Omit<GameModel, "players" | "_id"> & {
     players: ListObject<FirebasePlayerGameModel>;
+    previousTurns: ListObject<FirebasePreviousTurn>;
 };

@@ -40,7 +40,6 @@ export const getRandomAvailableCardIds = (
         cardToPick + p.inHandCardIds.length > maxCards
             ? maxCards - p.inHandCardIds.length
             : cardToPick;
-    console.log("availableCards", availableCards);
     const cards: string[] = [];
     while (cards.length < _cardToPick) {
         const remainingAvailable = filterCardNotIn(availableCards, cards);
