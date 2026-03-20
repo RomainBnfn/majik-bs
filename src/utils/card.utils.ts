@@ -46,9 +46,10 @@ export const transformBrawlerToCard = (
 };
 
 export const useGetIsDeckValid = () => {
+    const { maxCard, minCard } = useGameSettingCards();
+
     return (deck: DeckModel) => {
-        const { maxCard, minCard } = useGameSettingCards();
-        const cards = Object.keys(deck.cardIds).length;
+        const cards = Object.keys(deck.cardIds ?? {}).length;
         return minCard <= cards && cards <= maxCard;
     };
 };

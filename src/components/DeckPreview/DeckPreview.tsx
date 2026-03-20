@@ -1,11 +1,11 @@
 import "./DeckPreview.scss";
 import type { DeckModel } from "../../models/deck.model.ts";
-import RoundStatistic from "../RoundStatistic/RoundStatistic.tsx";
 import { DeleteForever, Style } from "@mui/icons-material";
 import { Card, IconButton } from "@mui/material";
 import { useGameSettingCards } from "../../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
 import classNames from "classnames";
 import { useIsDeckValid } from "../../utils/card.utils.ts";
+import RoundStatistic from "../RoundStatistic/RoundStatistic.tsx";
 
 type DeckPreviewProps = {
     deck: DeckModel;
@@ -36,7 +36,7 @@ const DeckPreview = ({
         >
             <span className={"DeckPreview-name"}>{deck.name}</span>
             <RoundStatistic
-                value={`${Object.keys(deck.cardIds).length}/${maxCard}`}
+                value={`${Object.keys(deck.cardIds ?? {}).length}/${maxCard}`}
                 type={"card"}
                 icon={<Style />}
             />
