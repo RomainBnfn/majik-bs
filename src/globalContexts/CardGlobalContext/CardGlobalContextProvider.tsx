@@ -4,13 +4,26 @@ import { FIREBASE_PATHS } from "../../constants/firebasePaths.ts";
 import type { ListObject } from "../../models/listObject.model.ts";
 import { fromObjectToList } from "../../utils/firebase.utils.ts";
 import type { CardModel, FirebaseCardModel } from "../../models/card.model.ts";
+import type {
+    FirebasePowerModel,
+    PowerModel,
+} from "../../models/power.model.ts";
+
+export const transformPowers = (
+    powers: ListObject<FirebasePowerModel>,
+): PowerModel[] => {
+    return fromObjectToList(powers).map((power) => ({
+        ...power,
+        conditions: fromObjectToList(power.conditions),
+    }));
+};
 
 export const transformCard = (
     cards: ListObject<FirebaseCardModel>,
 ): CardModel[] => {
     return fromObjectToList(cards).map((card) => ({
         ...card,
-        powers: fromObjectToList(card.powers),
+        powers: transformPowers(card.powers),
     }));
 };
 

@@ -76,7 +76,8 @@ export const defense = async (
         updates[`players/${defId}/discardCardIds/${card._id}`] = card._id;
         updates[`players/${defId}/inHandCardIds/${card._id}`] = null;
     }
-    if (!card || attackingCard.attack > card.defense) {
+    const hasAttackerWin = !card || attackingCard.attack > card.defense;
+    if (hasAttackerWin) {
         updates[`players/${defId}/health`] = defendingPlayer.health - 1;
 
         if (defendingPlayer.health - 1 <= 0) {
@@ -84,6 +85,25 @@ export const defense = async (
             isTerminated = true;
         }
     }
+    // #############################
+    // ### After defense effects ###
+    // #############################
+    if (card) {
+        const { updates: a, results: rr } = applyPowers(
+            card.powers,
+            GamePhaseTypes.AfterDefense,
+            { game, player: defendingPlayer, settings, hasAttackerWin },
+        );
+        const aa = rr.reduce((p, r) => p + r.toDamageAttacker, 0);
+        if (aa && !isTerminated) {
+            updates[`players/${atkId}/health`] = attackerPlayer.health - aa;
+            if (attackerPlayer.health - aa <= 0) {
+                updates["winnerPlayerId"] = defId;
+                isTerminated = true;
+            }
+        }
+    }
+
     const defPowerResults: PowerResults[] = [];
     if (card) {
         const { updates: u, results: r } = applyPowers(
