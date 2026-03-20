@@ -1,9 +1,17 @@
 import { AuthGlobalContext } from "./AuthGlobalContext.tsx";
 import { useEffect, useMemo, useState } from "react";
 import type { UserModel } from "../../models/user.model.ts";
-import { getAuth, onAuthStateChanged, signInWithPopup, type User } from "firebase/auth";
+import {
+    getAuth,
+    onAuthStateChanged,
+    signInWithPopup,
+    type User,
+} from "firebase/auth";
 import { firebaseApp, firebaseAuthProvider } from "../../main.tsx";
-import { getFirebaseValue, setFirebaseValue } from "../../services/firebase.service.ts";
+import {
+    getFirebaseValue,
+    setFirebaseValue,
+} from "../../services/firebase.service.ts";
 import { FIREBASE_PATHS } from "../../constants/firebasePaths.ts";
 import { useLocation, useNavigate } from "react-router";
 

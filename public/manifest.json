@@ -1,5 +1,5 @@
 {
-    "short_name": "MajBS",
+    "short_name": "Majik BS",
     "name": "Majik BS",
     "icons": [
         {
@@ -8,8 +8,10 @@
           "type": "image/png"
         }
     ],
-    "start_url": "./",
-    "scope": ".",
+    "start_url": "/",
+    "scope": "/",
+    "display_override": ["standalone", "window-controls-overlay"],
+    "orientation": "portrait",
     "display": "standalone",
     "theme_color": "black",
     "background_color": "white"

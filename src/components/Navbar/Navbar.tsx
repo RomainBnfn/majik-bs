@@ -10,7 +10,7 @@ const Navbar = () => {
         return null;
     }
     return (
-        <BottomNavigation showLabels value={pathname}>
+        <BottomNavigation className={"Navbar"} showLabels value={pathname}>
             <BottomNavigationAction
                 label="Decks"
                 value="/decks"
