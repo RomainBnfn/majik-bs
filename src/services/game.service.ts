@@ -1,7 +1,16 @@
 import type { GameModel } from "../models/game.model.ts";
 import type { CardModel } from "../models/card.model.ts";
-import { getOpponent, getPlayer, getRandomAvailableCardIds } from "../utils/game.utils.ts";
-import { getFirebaseRef, getFirebaseValue, pushFirebaseValue, updateFirebaseValue } from "./firebase.service.ts";
+import {
+    getOpponent,
+    getPlayer,
+    getRandomAvailableCardIds,
+} from "../utils/game.utils.ts";
+import {
+    getFirebaseRef,
+    getFirebaseValue,
+    pushFirebaseValue,
+    updateFirebaseValue,
+} from "./firebase.service.ts";
 import { FIREBASE_PATHS } from "../constants/firebasePaths.ts";
 import { TurnPhaseTypes } from "../enums/TurnPhaseType.enum.ts";
 import { transformGameResponse } from "../pages/GamePage/contexts/GameContextProvider.tsx";
@@ -57,6 +66,16 @@ export const defense = async (
     }
 
     await updateFirebaseValue(`${FIREBASE_PATHS.games}/${game._id}/`, updates);
+    await pushFirebaseValue(
+        `${FIREBASE_PATHS.games}/${game._id}/previousTurns`,
+        {
+            attackerCardId: attackingCard._id,
+            attackerPlayerId: atkId,
+            defenderCardId: card?._id ?? null,
+            defenderPlayerId: defId,
+            turn: game.currentTurn,
+        },
+    );
     const updatedGame = await getFirebaseValue(
         `${FIREBASE_PATHS.games}/${game._id}`,
     );
@@ -100,7 +119,7 @@ export const startPlayerTurn = (
 };
 
 export const getFreeInvitationCode = async () => {
-    return getRandomStringCode(6);
+    return getRandomStringCode(INVITATION_CODE_LENGTH);
 };
 
 export const createGame = async (

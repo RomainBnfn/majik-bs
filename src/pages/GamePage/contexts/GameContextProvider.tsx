@@ -12,6 +12,8 @@ import { useAuth } from "../../../globalContexts/AuthGlobalContext/AuthGlobalCon
 import { TurnPhaseTypes } from "../../../enums/TurnPhaseType.enum.ts";
 import { attackWithCard, defense } from "../../../services/game.service.ts";
 import { useCards } from "../../../globalContexts/CardGlobalContext/CardGlobalContext.tsx";
+import { useEffect, useState } from "react";
+import type { PreviousTurn } from "../../../models/previousTurn.model.ts";
 
 export const transformGameResponse = (
     v: FirebaseGameModel,
@@ -27,6 +29,7 @@ export const transformGameResponse = (
             inHandCardIds: valuesIfExists(p?.inHandCardIds),
         }),
     ),
+    previousTurns: fromObjectToList(v.previousTurns),
 });
 
 const valuesIfExists = (o): string[] =>
@@ -36,11 +39,19 @@ const GameContextProvider = ({ children }) => {
     const { id } = useParams();
     const { getCardById } = useCards();
     const { user } = useAuth();
+    const [knownTurns, setKnownTurns] = useState<PreviousTurn[] | undefined>();
     const [gameState] = useFirebaseValues<GameModel, FirebaseGameModel>(
         `${FIREBASE_PATHS.games}/${id}`,
         {} as GameModel,
         (v) => transformGameResponse(v, id),
     );
+
+    useEffect(() => {
+        if (!knownTurns && gameState.previousTurns) {
+            setKnownTurns(gameState.previousTurns);
+        }
+    }, [knownTurns, gameState.previousTurns]);
+
     const isLoggedPlayerTurn = gameState.currentPlayerId == user?.uid;
 
     const shouldSelectCard =
