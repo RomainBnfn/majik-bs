@@ -1,6 +1,7 @@
 import { type GameModel } from "../../../models/game.model.ts";
 import { type CardModel } from "../../../models/card.model.ts";
 import { createContext, useContext } from "react";
+import type { PreviousTurn } from "../../../models/previousTurn.model.ts";
 
 export type GameContextValue = {
     game: GameModel;
@@ -9,6 +10,8 @@ export type GameContextValue = {
     isLoggedPlayerTurn: boolean;
     shouldSelectCard: boolean;
     hasStarted: boolean;
+    nonPlayedPreviousTurn: PreviousTurn[];
+    seenPlayedTurn(turn: PreviousTurn): void;
 };
 
 export const GameContext = createContext<GameContextValue>({
@@ -22,6 +25,10 @@ export const GameContext = createContext<GameContextValue>({
     isLoggedPlayerTurn: false,
     shouldSelectCard: false,
     hasStarted: false,
+    nonPlayedPreviousTurn: [],
+    seenPlayedTurn(turn: PreviousTurn) {
+        //
+    },
 });
 
 export const useGame = () => {

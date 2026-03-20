@@ -105,6 +105,13 @@ const GameContextProvider = ({ children }) => {
                 isLoggedPlayerTurn,
                 shouldSelectCard,
                 hasStarted,
+                nonPlayedPreviousTurn:
+                    gameState.previousTurns?.filter(
+                        (p) => !knownTurns?.some((t) => t._id === p._id),
+                    ) ?? [],
+                seenPlayedTurn(turn: PreviousTurn) {
+                    setKnownTurns((p) => [...p, turn]);
+                },
             }}
         >
             {children}

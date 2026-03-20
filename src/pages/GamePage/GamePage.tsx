@@ -3,6 +3,7 @@ import { Navigate } from "react-router";
 import { useAuth } from "../../globalContexts/AuthGlobalContext/AuthGlobalContext.tsx";
 import { useGame } from "./contexts/gameContext.tsx";
 import GameBoard from "./components/GameBoard.tsx";
+import PreviousTurnAnimation from "./components/PreviousTurnAnimation.tsx";
 
 const GamePage = () => {
     const { user } = useAuth();
@@ -16,6 +17,7 @@ const GamePage = () => {
     return (
         <div className={"GamePage"}>
             <GameBoard />
+            <PreviousTurnAnimation />
         </div>
     );
 };
