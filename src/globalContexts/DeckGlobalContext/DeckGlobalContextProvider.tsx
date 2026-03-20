@@ -1,11 +1,11 @@
 import { DeckGlobalContext } from "./DeckGlobalContext.tsx";
-import { fromObjectToList } from "../../utils/firebase.utils.ts";
 import { useAuth } from "../AuthGlobalContext/AuthGlobalContext.tsx";
 import { useEffect, useState } from "react";
 import { type WithId } from "../../models/withId.model.ts";
 import { type DeckModel } from "../../models/deck.model.ts";
 import { onValue } from "firebase/database";
 import { getAllUserDecks } from "../../services/cards.service.ts";
+import { fromObjectToList } from "../../utils/firebase.utils.ts";
 
 const DeckGlobalContextProvider = ({ children }) => {
     const { user } = useAuth();

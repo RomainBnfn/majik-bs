@@ -4,7 +4,7 @@ import Login from "./components/Login.tsx";
 import GameRules from "./components/GameRules.tsx";
 
 const HomePage = () => {
-    const { user, isLogged } = useAuth();
+    const { isLogged } = useAuth();
     return (
         <div className={"HomePage"}>
             <h1 className={"HomePage-title"}>Majik BS</h1>

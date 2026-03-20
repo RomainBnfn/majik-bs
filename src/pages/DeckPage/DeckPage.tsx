@@ -11,7 +11,7 @@ import {
     ViewCompactAlt,
     Whatshot,
 } from "@mui/icons-material";
-import { FunctionComponent, useState } from "react";
+import { type FunctionComponent, useState } from "react";
 import { Link, useParams } from "react-router";
 import SortingButton from "../../components/SortingButton/SortingButton.tsx";
 import { Fab, IconButton, TextField } from "@mui/material";
@@ -41,7 +41,7 @@ const DeckPage = () => {
     const { maxPrice, maxCard, minCard } = useGameSettingCards();
 
     const deckPath = `${FIREBASE_PATHS.decks}/${id}`;
-    const [decks, areDeckLoading] = useFirebaseValues<DeckModel>(deckPath, {});
+    const [decks] = useFirebaseValues<DeckModel>(deckPath, {});
     const [sorting, setSorting] = useState({ type: "price", desc: false });
     const [compact, setCompact] = useState(false);
     const [displayOnly, setDisplayOnly] = useState(false);

@@ -3,13 +3,13 @@ import type { UserModel } from "../../models/user.model.ts";
 
 type AuthGlobalContextValue = {
     user: UserModel | undefined;
-    setUser(u: UserModel | undefined): void;
+    signIn(): void;
     isLogged: boolean;
 };
 
 export const AuthGlobalContext = createContext<AuthGlobalContextValue>({
     user: undefined,
-    setUser(u: UserModel | undefined) {
+    signIn() {
         //
     },
     isLogged: false,
