@@ -45,12 +45,10 @@ export const getRandomAvailableCardIds = (
         const remainingAvailable = filterCardNotIn(availableCards, cards);
         if (!remainingAvailable.length) {
             cards.push(defaultCardId);
-            console.log("pick default");
         } else {
             cards.push(
                 remainingAvailable[getRandomInt(remainingAvailable.length)],
             );
-            console.log("pick random");
         }
     }
     return cards;

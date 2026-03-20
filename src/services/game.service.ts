@@ -1,6 +1,7 @@
 import type { GameModel } from "../models/game.model.ts";
 import type { CardModel } from "../models/card.model.ts";
 import {
+    getCurrentPlayer,
     getOpponent,
     getPlayer,
     getRandomAvailableCardIds,
@@ -19,17 +20,34 @@ import type { UserModel } from "../models/user.model.ts";
 import { equalTo, get, orderByChild, query } from "firebase/database";
 import { fromObjectToList } from "../utils/firebase.utils.ts";
 import { getDeckFromId } from "./cards.service.ts";
+import {
+    applyPowers,
+    type PowerContext,
+    type PowerResults,
+} from "./cardPower.service.ts";
+import { GamePhaseTypes } from "../enums/GamePhaseType.enum.ts";
+import type { GameSettingGlobalValue } from "../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
+import type { PlayerGameModel } from "../models/playerGame.model.ts";
 
-const INVITATION_CODE_LENGTH = 6;
+const INVITATION_CODE_LENGTH = 3;
 
 export const getGameById = (id: string) => {
     return getFirebaseValue(`${FIREBASE_PATHS.games}/${id}`);
 };
 
-export const attackWithCard = (game: GameModel, card: CardModel) => {
-    const updates = {};
+export const attackWithCard = (
+    game: GameModel,
+    card: CardModel,
+    context: PowerContext,
+) => {
+    let updates = {};
     updates["currentPhase"] = TurnPhaseTypes.Defense;
     updates["currentSelectedCardId"] = card._id;
+    updates = {
+        ...updates,
+        ...applyPowers(card.powers, GamePhaseTypes.AfterAttack, context)
+            .updates,
+    };
     return updateFirebaseValue(`${FIREBASE_PATHS.games}/${game._id}`, updates);
 };
 
@@ -37,16 +55,18 @@ export const defense = async (
     game: GameModel,
     card: CardModel | undefined,
     attackingCard: CardModel,
+    settings: GameSettingGlobalValue,
 ) => {
     const defendingPlayer = getOpponent(game, game.currentPlayerId);
-    if (!defendingPlayer) {
+    const attackerPlayer = getCurrentPlayer(game);
+    if (!defendingPlayer || !attackerPlayer) {
         return;
     }
     const defId = defendingPlayer._id;
     const atkId = game.currentPlayerId;
 
     let isTerminated = false;
-    const updates = {
+    let updates = {
         [`players/${atkId}/discardCardIds/${attackingCard._id}`]:
             attackingCard._id,
 
@@ -64,7 +84,31 @@ export const defense = async (
             isTerminated = true;
         }
     }
-
+    const defPowerResults: PowerResults[] = [];
+    if (card) {
+        const { updates: u, results: r } = applyPowers(
+            card.powers,
+            GamePhaseTypes.OnEndTurn,
+            {
+                game: game,
+                player: defendingPlayer,
+                settings,
+            },
+        );
+        updates = { ...updates, ...u };
+        defPowerResults.push(...r);
+        console.log("defPowerResults", defPowerResults);
+    }
+    const { updates: au, results: atkPowerResults } = applyPowers(
+        attackingCard.powers,
+        GamePhaseTypes.OnEndTurn,
+        {
+            game: game,
+            player: defendingPlayer,
+            settings,
+        },
+    );
+    updates = { ...updates, ...au };
     await updateFirebaseValue(`${FIREBASE_PATHS.games}/${game._id}/`, updates);
     await pushFirebaseValue(
         `${FIREBASE_PATHS.games}/${game._id}/previousTurns`,
@@ -82,34 +126,57 @@ export const defense = async (
     if (isTerminated) {
         return;
     }
+    const toDrawAttacker = atkPowerResults.reduce((p, r) => p + r.toDraw, 0);
+    if (toDrawAttacker) {
+        await makePlayerDraw(game._id, attackerPlayer, toDrawAttacker, {
+            maxCards: 3,
+            defaultCardId: "e6c645e4-7882-4186-a003-9de8cee27e12",
+        });
+    }
     await startPlayerTurn(
         transformGameResponse(updatedGame.val(), game._id),
         defId,
-        !!card,
+        (!!card ? 1 : 2) +
+            defPowerResults.reduce((p, r) => p + (r.toDraw ?? 0), 0),
     );
 };
 
-export const startPlayerTurn = (
+export const makePlayerDraw = (
+    gameId: string,
+    player: PlayerGameModel,
+    toDrawCards: number,
+    { maxCards, defaultCardId }: { maxCards: number; defaultCardId: string },
+) => {
+    const availableCardIds = getRandomAvailableCardIds(
+        player,
+        maxCards,
+        toDrawCards,
+        defaultCardId,
+    );
+    const updates = {
+        ...availableCardIds.reduce((o, i) => ({ ...o, [`${i}`]: i }), {}),
+    };
+    return updateFirebaseValue(
+        `${FIREBASE_PATHS.games}/${gameId}/players/${player._id}/inHandCardIds/`,
+        updates,
+    );
+};
+
+export const startPlayerTurn = async (
     game: GameModel,
     playerId: string,
-    hasUsedCard: boolean,
+    cardToPick: number,
     defaultCardId = "e6c645e4-7882-4186-a003-9de8cee27e12",
 ) => {
     const player = getPlayer(game, playerId);
     if (!player) {
         return;
     }
-    const availableCardIds = getRandomAvailableCardIds(
-        player,
-        3,
-        hasUsedCard ? 1 : 2,
+    await makePlayerDraw(game._id, player, cardToPick, {
+        maxCards: 3,
         defaultCardId,
-    );
+    });
     const updates = {
-        ...availableCardIds.reduce(
-            (o, i) => ({ ...o, [`players/${playerId}/inHandCardIds/${i}`]: i }),
-            {},
-        ),
         currentPlayerId: playerId,
         currentTurn: game.currentTurn + 1,
         currentPhase: TurnPhaseTypes.Attack,

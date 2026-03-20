@@ -1,8 +1,14 @@
 import "./Card.scss";
 import type { CardModel } from "../../models/card.model.ts";
 import RoundStatistic from "../RoundStatistic/RoundStatistic.tsx";
-import { Adjust, RadioButtonChecked, Shield, Whatshot } from "@mui/icons-material";
+import {
+    Adjust,
+    RadioButtonChecked,
+    Shield,
+    Whatshot,
+} from "@mui/icons-material";
 import classNames from "classnames";
+import CardPowerIcon from "../CardPowerIcon/CardPowerIcon.tsx";
 
 export type CardProps = {
     card: CardModel;
@@ -57,7 +63,11 @@ const Card = ({
                         />
                         <span>{card.name}</span>
                     </div>
-                    <div className={"Card-content"} />
+                    <div className={"Card-content"}>
+                        {card.powers.map((p) => (
+                            <CardPowerIcon power={p} />
+                        ))}
+                    </div>
                     <div className={"Card-footer"}>
                         <RoundStatistic
                             className={classNames(

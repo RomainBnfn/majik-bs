@@ -14,6 +14,8 @@ import { attackWithCard, defense } from "../../../services/game.service.ts";
 import { useCards } from "../../../globalContexts/CardGlobalContext/CardGlobalContext.tsx";
 import { useEffect, useState } from "react";
 import type { PreviousTurn } from "../../../models/previousTurn.model.ts";
+import { useGameSettingCards } from "../../../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
+import { getPlayer } from "../../../utils/game.utils.ts";
 
 export const transformGameResponse = (
     v: FirebaseGameModel,
@@ -39,6 +41,7 @@ const GameContextProvider = ({ children }) => {
     const { id } = useParams();
     const { getCardById } = useCards();
     const { user } = useAuth();
+    const gameSettings = useGameSettingCards();
     const [knownTurns, setKnownTurns] = useState<PreviousTurn[] | undefined>();
     const [gameState] = useFirebaseValues<GameModel, FirebaseGameModel>(
         `${FIREBASE_PATHS.games}/${id}`,
@@ -65,11 +68,15 @@ const GameContextProvider = ({ children }) => {
         !gameState.winnerPlayerId && gameState.players?.length === 2;
 
     const onClickOnCard = (c: CardModel) => {
-        if (!shouldSelectCard) {
+        if (!shouldSelectCard || !user) {
             return;
         }
         if (isLoggedPlayerTurn) {
-            return attackWithCard(gameState, c);
+            return attackWithCard(gameState, c, {
+                settings: gameSettings,
+                game: gameState,
+                player: getPlayer(gameState, user.uid),
+            });
         }
         const attackingCard = gameState.currentSelectedCardId
             ? getCardById(gameState.currentSelectedCardId)
