@@ -8,6 +8,7 @@ import GameCurrentPhase from "./GameCurrentPhase.tsx";
 import { Adjust } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import { TurnPhaseTypes } from "../../../enums/TurnPhaseType.enum.ts";
+import GameHandMessage from "./GameHandMessage.tsx";
 
 const GameBoard = () => {
     const { game, shouldSelectCard, onSkipDefense, hasStarted } = useGame();
@@ -23,6 +24,9 @@ const GameBoard = () => {
                         <GameHand
                             key={game.players?.[i]?._id ?? i}
                             player={game.players?.[i]}
+                            message={
+                                <GameHandMessage player={game.players?.[i]} />
+                            }
                         />
                     ))}
                 </div>
