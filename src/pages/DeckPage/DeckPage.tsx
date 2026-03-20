@@ -7,6 +7,7 @@ import {
     CheckBox,
     RadioButtonChecked,
     Shield,
+    Stars,
     Style,
     ViewCompactAlt,
     Whatshot,
@@ -45,6 +46,7 @@ const DeckPage = () => {
     const [sorting, setSorting] = useState({ type: "price", desc: false });
     const [compact, setCompact] = useState(false);
     const [displayOnly, setDisplayOnly] = useState(false);
+    const [filterPowers, setFilterPowers] = useState(false);
 
     const selectedCardIds = decks.cardIds ? Object.keys(decks.cardIds) : [];
 
@@ -66,9 +68,11 @@ const DeckPage = () => {
         .map((id) => cards.find((c) => c.id == id))
         .filter((c) => !!c);
 
-    const displayedCards = displayOnly
-        ? selectedCards
-        : cards.filter((c) => c.canBePicked !== false);
+    const displayedCards = (
+        displayOnly
+            ? selectedCards
+            : cards.filter((c) => c.canBePicked !== false)
+    ).filter((c) => !filterPowers || c.powers?.length);
     //.filter((c) => !selectedCardIds.some((i) => i == c.id));
 
     const selectedPrice = selectedCards.reduce((t, c) => t + c.basePrice, 0);
@@ -166,6 +170,12 @@ const DeckPage = () => {
                         onClick={() => setDisplayOnly((p) => !p)}
                     >
                         <CheckBox />
+                    </IconButton>
+                    <IconButton
+                        color={filterPowers ? "primary" : undefined}
+                        onClick={() => setFilterPowers((p) => !p)}
+                    >
+                        <Stars />
                     </IconButton>
                 </div>
             </div>

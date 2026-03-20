@@ -13,6 +13,6 @@
     "display_override": ["standalone", "window-controls-overlay"],
     "orientation": "portrait",
     "display": "standalone",
-    "theme_color": "black",
+    "theme_color": "white",
     "background_color": "white"
 }
