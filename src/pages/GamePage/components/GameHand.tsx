@@ -56,6 +56,7 @@ const GameHand = ({ player, message }: GameHandProps) => {
                                         game.currentSelectedCardId !== card._id)
                                 }
                                 onClick={() =>
+                                    isUs &&
                                     card &&
                                     shouldSelectCard &&
                                     onClickOnCard(card)
