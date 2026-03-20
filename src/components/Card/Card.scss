@@ -95,6 +95,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+
         svg {
             font-size: var(--card-back-logo-size);
         }
@@ -117,6 +118,19 @@
         --card-outline-color: #2beacf;
         --card-outline-width: 5px;
         --card-border-width: 1px;
+    }
+
+    &-toSelect {
+        --pulse-offset-end: 8px;
+        --pulse-offset-start: 5px;
+        border-radius: 6px;
+        animation: pulse 1s infinite;
+        outline: 4px solid rgba(84, 255, 250, 0.7) !important;
+    }
+
+    &-disabled {
+        filter: grayscale(0.8);
+        opacity: 0.8;
     }
 
     &-header {
@@ -154,6 +168,11 @@
 
             &-highlighted {
                 flex: 2;
+                --pulse-offset-end: 3px;
+                --pulse-offset-start: -3px;
+                outline: 1px #2beacf solid;
+                animation: pulse 1s;
+                animation-iteration-count: infinite;
             }
         }
 

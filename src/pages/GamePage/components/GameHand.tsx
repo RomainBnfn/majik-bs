@@ -6,11 +6,14 @@ import { useCards } from "../../../globalContexts/CardGlobalContext/CardGlobalCo
 import { useGameSettingCards } from "../../../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
 import { TurnPhaseTypes } from "../../../enums/TurnPhaseType.enum.ts";
 import type { PlayerGameModel } from "../../../models/playerGame.model.ts";
+import type { ReactElement } from "react";
+import { getOppositeTurnPhase } from "../../../utils/game.utils.ts";
 
 type GameHandProps = {
     player: PlayerGameModel | undefined;
+    message?: ReactElement;
 };
-const GameHand = ({ player }: GameHandProps) => {
+const GameHand = ({ player, message }: GameHandProps) => {
     const { game, shouldSelectCard } = useGame();
     const { getCardById } = useCards();
     const { user } = useAuth();
@@ -18,22 +21,33 @@ const GameHand = ({ player }: GameHandProps) => {
 
     const { cardInHand } = useGameSettingCards();
     const { onClickOnCard } = useGame();
-
     return (
         <div className={classNames("GameHand", isUs && "GameHand-self")}>
             {[...new Array(cardInHand).keys()].map((i) => {
                 const c = player?.inHandCardIds[i];
                 const card = c ? getCardById(c) : undefined;
+                const isActive =
+                    game.currentPlayerId === player?._id &&
+                    game.currentSelectedCardId == c;
+                const disabled =
+                    isUs &&
+                    game.currentPlayerId == user?.uid &&
+                    game.currentSelectedCardId &&
+                    game.currentSelectedCardId != c;
+                const toSelect = isUs && shouldSelectCard;
+                const aa = isActive
+                    ? getOppositeTurnPhase(game.currentPhase)
+                    : toSelect
+                      ? game.currentPhase
+                      : undefined;
                 return (
                     <div className={"GameHand-slot"}>
                         {card && (
                             <Card
                                 card={card}
-                                active={
-                                    isUs &&
-                                    game.currentPlayerId == user?.uid &&
-                                    game.currentSelectedCardId == c
-                                }
+                                toSelect={toSelect}
+                                active={isActive}
+                                disabled={disabled}
                                 reverse={
                                     !isUs &&
                                     (!shouldSelectCard ||
@@ -46,11 +60,17 @@ const GameHand = ({ player }: GameHandProps) => {
                                     shouldSelectCard &&
                                     onClickOnCard(card)
                                 }
+                                highlightMode={
+                                    disabled
+                                        ? undefined
+                                        : aa?.toLocaleLowerCase()
+                                }
                             />
                         )}
                     </div>
                 );
             })}
+            {message}
         </div>
     );
 };

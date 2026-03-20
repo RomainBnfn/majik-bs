@@ -14,6 +14,26 @@ a {
     text-decoration: none;
 }
 
+@keyframes pulse {
+    0% {
+        outline-offset: var(--pulse-offset-start);
+        outline-width: 4px;
+    }
+
+    60% {
+        outline-offset: var(--pulse-offset-end);
+        outline-width: 0;
+    }
+    80% {
+        outline-offset: var(--pulse-offset-end);
+        outline-width: 0;
+    }
+    100% {
+        outline-offset: var(--pulse-offset-start);
+        outline-width: 4px;
+    }
+}
+
 @keyframes wiggle {
     0% {
         transform: rotate(0deg) rotateY(0deg);
@@ -36,6 +56,9 @@ a {
 }
 
 #root {
+    --pulse-offset-start: -5px;
+    --pulse-offset-end: 3px;
+
     overflow: hidden;
     height: 100vh;
     width: 100vw;

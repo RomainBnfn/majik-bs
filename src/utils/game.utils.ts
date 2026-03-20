@@ -1,6 +1,10 @@
 import { type GameModel } from "../models/game.model.ts";
 import { getRandomInt } from "./random.utils.ts";
 import type { PlayerGameModel } from "../models/playerGame.model.ts";
+import {
+    type TurnPhaseType,
+    TurnPhaseTypes,
+} from "../enums/TurnPhaseType.enum.ts";
 
 export const getPlayer = (game: GameModel, playerId: string) => {
     return game.players.find((p) => p._id == playerId);
@@ -43,4 +47,10 @@ export const getRandomAvailableCardIds = (
         );
     }
     return cards;
+};
+
+export const getOppositeTurnPhase = (p: TurnPhaseType): TurnPhaseType => {
+    return p === TurnPhaseTypes.Attack
+        ? TurnPhaseTypes.Defense
+        : TurnPhaseTypes.Attack;
 };

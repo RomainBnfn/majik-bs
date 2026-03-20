@@ -31,10 +31,7 @@ const GameCurrentPhase = () => {
     return (
         <div className={"GameCurrentPhase"}>
             <div>Tour {game.currentTurn}</div>
-            <div>
-                Phase {game.currentPhase}:
-                <b>{shouldSelectCard && "Action attendue"}</b>
-            </div>
+            <b>{shouldSelectCard && "A vous de jouer !"}</b>
         </div>
     );
 };

@@ -1,18 +1,15 @@
 import "./Card.scss";
 import type { CardModel } from "../../models/card.model.ts";
 import RoundStatistic from "../RoundStatistic/RoundStatistic.tsx";
-import {
-    Adjust,
-    RadioButtonChecked,
-    Shield,
-    Whatshot,
-} from "@mui/icons-material";
+import { Adjust, RadioButtonChecked, Shield, Whatshot } from "@mui/icons-material";
 import classNames from "classnames";
 
 export type CardProps = {
     card: CardModel;
     compact?: boolean;
     active?: boolean;
+    toSelect?: boolean;
+    disabled?: boolean;
     reverse?: boolean;
     onClick?(): void;
     className?: string;
@@ -25,6 +22,8 @@ const Card = ({
     compact,
     onClick,
     active,
+    toSelect,
+    disabled,
     reverse,
     className,
     onAnimationEnd,
@@ -37,6 +36,8 @@ const Card = ({
                 compact && "Card-compact",
                 active && "Card-active",
                 reverse && "Card-reverse",
+                toSelect && "Card-toSelect",
+                disabled && "Card-disabled",
                 className,
             )}
             style={{
