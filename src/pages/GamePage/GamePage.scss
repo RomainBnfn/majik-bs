@@ -190,7 +190,7 @@
     0% {
         transform: translateX(0);
     }
-    70% {
+    75% {
         transform: translateX(var(--attacker-left-step));
     }
     85% {
@@ -275,13 +275,13 @@
     &-attacker {
         --attacker-left-step: -60px;
         --attacker-right-step: 30px;
-        animation: attackerHit 2s;
+        animation: attackerHit 1.5s;
     }
 
     &-defender {
         --defender-right-step: 10px;
         animation: defenderHit 0.5s;
-        animation-delay: 1.8s;
+        animation-delay: 1.3s;
 
         &-empty {
             border: 1px solid white;
