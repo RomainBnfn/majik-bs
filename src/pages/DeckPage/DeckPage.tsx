@@ -13,7 +13,7 @@ import {
     Whatshot,
 } from "@mui/icons-material";
 import { type FunctionComponent, useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import SortingButton from "../../components/SortingButton/SortingButton.tsx";
 import { Fab, IconButton, TextField } from "@mui/material";
 import type { DeckModel } from "../../models/deck.model.ts";
@@ -40,15 +40,15 @@ const DeckPage = () => {
     const { id } = useParams();
     const { cards } = useCards();
     const { maxPrice, maxCard, minCard } = useGameSettingCards();
-
+    const navigate = useNavigate();
     const deckPath = `${FIREBASE_PATHS.decks}/${id}`;
-    const [decks] = useFirebaseValues<DeckModel>(deckPath, {});
+    const [decks, loading] = useFirebaseValues<DeckModel>(deckPath, {});
     const [sorting, setSorting] = useState({ type: "price", desc: false });
     const [compact, setCompact] = useState(false);
     const [displayOnly, setDisplayOnly] = useState(false);
     const [filterPowers, setFilterPowers] = useState(false);
 
-    const selectedCardIds = decks.cardIds ? Object.keys(decks.cardIds) : [];
+    const selectedCardIds = decks?.cardIds ? Object.keys(decks.cardIds) : [];
 
     const [wrongId, setWrongId] = useState<string | undefined>(undefined);
 
@@ -116,6 +116,10 @@ const DeckPage = () => {
             return [card.id, ...p];
         });
     };
+
+    if (!loading && !decks) {
+        navigate("/");
+    }
 
     return (
         <div className={"DeckPage"}>

@@ -57,7 +57,7 @@ const GamesPage = () => {
     }, [user]);
 
     const handleJoinGame = () => {
-        if (!user || !selectedDeckId) {
+        if (!user || !selectedDeckId || !invitationCode) {
             return;
         }
         joinGame(user, invitationCode, selectedDeckId, maxHealth).then((g) => {

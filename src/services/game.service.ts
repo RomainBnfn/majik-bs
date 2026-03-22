@@ -250,7 +250,7 @@ export const joinGame = async (
         query(
             getFirebaseRef(FIREBASE_PATHS.games),
             orderByChild("invitationCode"),
-            equalTo(invitationCode),
+            equalTo(invitationCode.toLocaleUpperCase()),
         ),
     );
     if (!firebaseGame.exists()) {

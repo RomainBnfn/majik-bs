@@ -4,6 +4,7 @@ import { useAuth } from "../../globalContexts/AuthGlobalContext/AuthGlobalContex
 import { useGame } from "./contexts/gameContext.tsx";
 import GameBoard from "./components/GameBoard.tsx";
 import PreviousTurnAnimation from "./components/PreviousTurnAnimation.tsx";
+import WinnerAnimation from "./components/WinnerAnimation.tsx";
 
 const GamePage = () => {
     const { user } = useAuth();
@@ -18,6 +19,7 @@ const GamePage = () => {
         <div className={"GamePage"}>
             <GameBoard />
             <PreviousTurnAnimation />
+            <WinnerAnimation />
         </div>
     );
 };
