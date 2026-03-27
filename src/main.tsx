@@ -29,7 +29,7 @@ const router = createBrowserRouter([
                 <DeckGlobalContextProvider>
                     <CardGlobalContextProvider>
                         <GameSettingGlobalContextProvider>
-                            <div className={"App"}>
+                            <div className={"App notranslate"}>
                                 <div className={"App-content"}>
                                     <Outlet />
                                 </div>
