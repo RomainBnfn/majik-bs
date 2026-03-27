@@ -27,27 +27,7 @@ const DeckPreview = ({
     const isValid = useIsDeckValid(deck);
     const { getCardById } = useCards();
     const selectedCardIds = Object.keys(deck.cardIds);
-    const getScale = () => {
-        if (!selectedCardIds?.length) {
-            return 1;
-        }
-        if (selectedCardIds.length <= 2) {
-            return 2;
-        }
-        if (selectedCardIds.length <= 4) {
-            return 2.5;
-        }
-        if (selectedCardIds.length <= 6) {
-            return 3;
-        }
-        if (selectedCardIds.length <= 8) {
-            return 3.5;
-        }
-        if (selectedCardIds.length <= 10) {
-            return 4;
-        }
-        return 5;
-    };
+
     return (
         <MUICard
             className={classNames(
@@ -57,17 +37,15 @@ const DeckPreview = ({
             )}
             variant="outlined"
             onClick={onClick}
+            style={{
+                "--deck-preview-card-amount": selectedCardIds.length,
+            }}
         >
             <div className={"DeckPreview-cards"}>
                 {!selectedCardIds?.length ? (
                     "No card"
                 ) : (
-                    <div
-                        className="DeckPreview-cards-wrapper"
-                        style={{
-                            "--deck-preview-card-scale": getScale(),
-                        }}
-                    >
+                    <div className="DeckPreview-cards-wrapper">
                         {selectedCardIds?.map((c) => {
                             const card = getCardById(c);
                             if (card) {

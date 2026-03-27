@@ -1,6 +1,9 @@
 .DeckPreview {
     --deck-preview-width: 150px;
-    --deck-preview-card-scale: 4;
+    --deck-preview-card-amount: 1;
+    --deck-preview-card-scale: calc(
+        var(--deck-preview-card-amount) * 0.25 + 1.5
+    );
     --deck-preview-background-color: #f3f6f6;
     --deck-preview-cards-background-color: #dadfe1;
 
@@ -13,7 +16,7 @@
 
     &-cards {
         overflow: hidden;
-        height: 75px;
+        height: 80px;
         border-radius: 4px;
         background-color: var(--deck-preview-cards-background-color);
         margin: 5px !important;
