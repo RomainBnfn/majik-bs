@@ -1,10 +1,6 @@
 import "./GamesPage.scss";
 import { Link, Navigate, useNavigate } from "react-router";
-import {
-    createGame,
-    getAllPlayerGames,
-    joinGame,
-} from "../../services/game.service.ts";
+import { createGame, getAllPlayerGames, joinGame } from "../../services/game.service.ts";
 import { useAuth } from "../../globalContexts/AuthGlobalContext/AuthGlobalContext.tsx";
 import { useGameSettingCards } from "../../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
 import { useEffect, useState } from "react";
