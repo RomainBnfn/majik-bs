@@ -20,6 +20,7 @@ import { useLocalStorageState } from "../../hooks/useLocalStorageState.ts";
 import GamePreview from "../../components/GamePreview/GamePreview.tsx";
 
 const SELECTED_DECK_PATH = "selectedDeck";
+
 const GamesPage = () => {
     const { user } = useAuth();
     const { maxHealth } = useGameSettingCards();
@@ -35,14 +36,8 @@ const GamesPage = () => {
     const navigate = useNavigate();
     const nonTerminatedGames = games.filter((g) => !g.winnerPlayerId);
 
-    useEffect(() => {
-        if (
-            selectedDeckId &&
-            !validDecks.some((d) => d._id == selectedDeckId)
-        ) {
-            setSelectedDeckId(validDecks[0]?._id);
-        }
-    }, [selectedDeckId, setSelectedDeckId, validDecks]);
+    const hasSelectedValidDeck =
+        selectedDeckId && validDecks.some((d) => d._id == selectedDeckId);
 
     useEffect(() => {
         if (!selectedDeckId && validDecks.length) {
@@ -85,7 +80,7 @@ const GamesPage = () => {
     return (
         <div className={"GamesPage"}>
             <h1>Vos parties</h1>
-            {!!selectedDeckId && (
+            {!!hasSelectedValidDeck && (
                 <>
                     <div className={"Invitation-field"}>
                         <TextField
@@ -139,14 +134,14 @@ const GamesPage = () => {
                         />
                     ))}
                 </div>
-                {!validDecks.length && (
+                {!hasSelectedValidDeck && (
                     <p>
                         Commencez par créer un deck avant de créer ou rejoindre
                         une partie
                     </p>
                 )}
             </div>
-            {!!selectedDeckId && !!nonTerminatedGames.length && (
+            {!!hasSelectedValidDeck && !!nonTerminatedGames.length && (
                 <div className={"GamesPage-games"}>
                     <h2>Active games</h2>
                     <p>Reprendre une ancienne partie non terminée</p>
