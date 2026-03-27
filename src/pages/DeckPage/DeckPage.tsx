@@ -65,7 +65,7 @@ const DeckPage = () => {
     };
 
     const selectedCards = selectedCardIds
-        .map((id) => cards.find((c) => c.id == id))
+        .map((id) => cards.find((c) => c._id == id))
         .filter((c) => !!c);
 
     const displayedCards = (
@@ -100,20 +100,20 @@ const DeckPage = () => {
     };
 
     const onClickOnCard = (card: CardModel) => {
-        const isUnselecting = selectedCardIds.some((i) => i == card.id);
+        const isUnselecting = selectedCardIds.some((i) => i == card._id);
         if (
             !isUnselecting &&
             (selectedCardIds.length >= maxCard ||
                 card.basePrice + selectedPrice > maxPrice)
         ) {
-            setWrongId(card.id);
+            setWrongId(card._id);
             return;
         }
         setSelectedCardIds((p) => {
-            if (p.some((i) => String(i) == card.id)) {
-                return p.filter((i) => i != card.id);
+            if (p.some((i) => String(i) == card._id)) {
+                return p.filter((i) => i != card._id);
             }
-            return [card.id, ...p];
+            return [card._id, ...p];
         });
     };
 

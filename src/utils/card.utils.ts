@@ -30,7 +30,7 @@ export const transformBrawlerToCard = (
 ): CardModel[] => {
     return brawlers.map((b) => {
         return {
-            id: b.id,
+            _id: b.id,
             name: b.name,
             image: b.imageUrl,
             rarity: {
@@ -40,6 +40,7 @@ export const transformBrawlerToCard = (
             },
             description: b.description,
             basePrice: b.rarity.id,
+            powers: [],
             ...getRandomAttackDefense(b.rarity.id),
         };
     });

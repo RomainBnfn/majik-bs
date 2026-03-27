@@ -12,7 +12,7 @@ const DeckContent = ({ selectedCards, onClick }: DeckContentProps) => {
             {selectedCards.map((card) => (
                 <Card
                     active={true}
-                    key={card.id}
+                    key={card._id}
                     card={card}
                     compact={true}
                     onClick={() => {

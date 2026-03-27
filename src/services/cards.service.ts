@@ -14,7 +14,10 @@ export const generateCardsFromBrawlers = async (): Promise<void> => {
     const cards = transformBrawlerToCard(brawlers);
     return setFirebaseValue(
         FIREBASE_PATHS.userDecks,
-        cards.reduce((o, card) => ({ ...o, [card.id]: card }), {}),
+        cards.reduce((o, card) => {
+            const { _id, powers, ...transformedCard } = card;
+            return { ...o, [card._id]: transformedCard };
+        }, {}),
     );
 };
 

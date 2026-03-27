@@ -3,7 +3,6 @@ import { type ListObject } from "./listObject.model.ts";
 import type { FirebasePowerModel, PowerModel } from "./power.model.ts";
 
 export type CardModel = WithId<{
-    id: string;
     name: string;
     image: string;
     defense: number;
