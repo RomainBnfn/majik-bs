@@ -1,0 +1,40 @@
+.RoundStatistic {
+    --statistic-color: white;
+    --font-size: 14px;
+    --statistic-border-color: #e5e5e5;
+    --statistic-text-color: var(--color-text-light);
+
+    font-size: var(--font-size);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: var(--statistic-text-color);
+    border: 2px solid var(--statistic-border-color);
+
+    font-weight: bold;
+    background-color: var(--statistic-color);
+    border-radius: 8px;
+    padding: 0 4px;
+    gap: 2px;
+
+    svg {
+        font-size: var(--font-size);
+    }
+    &-attack {
+        --statistic-color: #7e0b26;
+    }
+
+    &-defense {
+        --statistic-color: #1d5370;
+    }
+
+    &-price {
+        --statistic-color: #d99b02;
+    }
+
+    &-card {
+        --statistic-color: #ecaecb;
+        --statistic-text-color: var(--color-text);
+    }
+}

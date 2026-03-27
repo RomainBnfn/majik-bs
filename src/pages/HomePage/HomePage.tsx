@@ -1,0 +1,17 @@
+import "./HomePage.scss";
+import { useAuth } from "../../globalContexts/AuthGlobalContext/AuthGlobalContext.tsx";
+import Login from "./components/Login.tsx";
+import GameRules from "./components/GameRules.tsx";
+
+const HomePage = () => {
+    const { isLogged } = useAuth();
+    return (
+        <div className={"HomePage"}>
+            <h1 className={"HomePage-title"}>Majik BS</h1>
+            {!isLogged && <Login />}
+            {isLogged && <GameRules />}
+        </div>
+    );
+};
+
+export default HomePage;

@@ -1,0 +1,16 @@
+.DeckPreview {
+    height: 50px;
+    display: flex;
+    align-items: center;
+
+    &-name {
+        width: 60px;
+    }
+
+    &-active {
+        border: 1px aqua solid !important;
+    }
+    &-invalid {
+        border: 1px red solid !important;
+    }
+}

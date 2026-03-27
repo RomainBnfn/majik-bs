@@ -24,4 +24,8 @@ dist-ssr
 *.sw?
 
 # Firebase real config
+assets/firebaseConfig.js
 /src/assets/firebaseConfig.ts
+
+# Local Netlify folder
+.netlify

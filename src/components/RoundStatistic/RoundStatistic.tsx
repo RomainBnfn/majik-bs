@@ -1,15 +1,27 @@
-import "./RoundStatistic.css";
+import "./RoundStatistic.scss";
 import type { HTMLProps } from "react";
+import classNames from "classnames";
 
 export type RoundStatisticProps = {
-    value: number;
+    className?: string;
+    value: number | string;
     type: string;
     icon: HTMLProps<any>["children"];
 };
 
-const RoundStatistic = ({ value, type, icon }: RoundStatisticProps) => {
+const RoundStatistic = ({
+    value,
+    type,
+    icon,
+    className,
+}: RoundStatisticProps) => {
     return (
-        <div className={`RoundStatistic RoundStatistic-${type}`}>
+        <div
+            className={classNames(
+                `RoundStatistic RoundStatistic-${type}`,
+                className,
+            )}
+        >
             {value}
             {icon}
         </div>

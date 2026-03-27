@@ -1,0 +1,185 @@
+.Card {
+    --card-rarity-color: white;
+    --card-background-url: "";
+
+    --card-border-radius: 8px;
+
+    --card-outline-width: 4px;
+    --card-outline-color: #c2c2c2;
+
+    --card-back-background-color: #235560;
+    --card-back-text-color: #ffeab6;
+
+    --card-border-width: 2px;
+    --card-border-color: var(--card-rarity-color);
+
+    --card-inner-border-width: 4px;
+    --card-border-inner-radius: 6px;
+
+    --card-header-font-size: 22px;
+    --card-back-logo-size: 90px;
+
+    perspective: 1000px;
+
+    display: flex;
+    flex-direction: column;
+
+    width: var(--card-width);
+    height: var(--card-height);
+
+    margin: var(--card-outline-width);
+
+    transition: outline 1s ease-in-out;
+
+    &-reverse {
+        .Card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .Card-front {
+            opacity: 0;
+        }
+    }
+
+    &-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+
+        display: flex;
+        flex-direction: column;
+        border-radius: var(--card-border-radius);
+
+        outline: var(--card-outline-width) var(--card-outline-color) solid;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    &-front,
+    &-back {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        border-radius: 8px;
+    }
+
+    &-front {
+        overflow: hidden;
+        border: var(--card-border-width) var(--card-border-color) solid;
+        background: linear-gradient(
+            165deg,
+            var(--card-rarity-color) 25%,
+            #1c1c1c 70%
+        );
+        transition: opacity 0.6s;
+
+        .Card-content {
+            z-index: 1;
+            color: white;
+        }
+    }
+
+    &-back {
+        transform: rotateY(180deg);
+        background: var(--card-back-background-color);
+        color: var(--card-back-text-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+            font-size: var(--card-back-logo-size);
+        }
+    }
+
+    &-content {
+        flex: 1;
+        background: no-repeat center var(--card-background-url);
+        background-size: 130%;
+        border-radius: var(--card-border-inner-radius);
+        margin: 0 var(--card-inner-border-width);
+    }
+
+    &-compact {
+        --card-height: 80px;
+        --card-back-logo-size: 50px;
+    }
+
+    &-active {
+        --card-outline-color: #2beacf;
+        --card-outline-width: 5px;
+        --card-border-width: 1px;
+    }
+
+    &-toSelect {
+        --pulse-offset-end: 8px;
+        --pulse-offset-start: 5px;
+        border-radius: 6px;
+        animation: pulse 1s infinite;
+        outline: 4px solid rgba(84, 255, 250, 0.7) !important;
+    }
+
+    &-disabled {
+        filter: grayscale(0.8);
+        opacity: 0.8;
+    }
+
+    &-header {
+        position: relative;
+        margin: 2px;
+        text-align: center;
+
+        span {
+            font-family: "LondrinaShadow";
+        }
+
+        .RoundStatistic {
+            position: absolute;
+            z-index: 2;
+            right: calc(var(--card-inner-border-width) / 2);
+            bottom: calc(0.25 * var(--card-inner-border-width));
+            transform: translate(0, 100%);
+        }
+
+        span {
+            font-size: var(--card-header-font-size);
+            line-height: calc(var(--card-header-font-size) - 4px);
+            font-weight: bold;
+        }
+    }
+
+    &-footer {
+        display: flex;
+        justify-content: space-around;
+        margin: 4px;
+        gap: 4px;
+
+        &-statistic {
+            flex: 1;
+
+            &-highlighted {
+                flex: 2;
+                --pulse-offset-end: 3px;
+                --pulse-offset-start: -3px;
+                outline: 1px #2beacf solid;
+                animation: pulse 1s;
+                animation-iteration-count: infinite;
+            }
+        }
+
+        &:has(&-statistic-highlighted) {
+            > :not(.Card-footer-statistic-highlighted) {
+                opacity: 0.4;
+            }
+        }
+    }
+}

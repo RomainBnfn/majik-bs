@@ -1,0 +1,577 @@
+.GamePage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #8dbaea;
+    overflow: hidden;
+    position: relative;
+
+    &-navigate {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 1;
+    }
+}
+
+.GameBoard {
+    --perspective: 200px;
+
+    display: flex;
+    flex-direction: column;
+    perspective: var(--perspective);
+    margin: -10px;
+
+    &-content {
+        --angle: 15deg;
+        --translate-z: -35px; // todo animation
+        --translate-y: -75px;
+
+        display: flex;
+        background-color: #4f84be;
+        transform: rotateX(var(--angle)) translateY(var(--translate-y))
+            translateZ(var(--translate-z));
+        justify-content: center;
+        align-items: center;
+
+        &-background {
+            position: absolute;
+            display: flex;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            justify-content: center;
+            align-items: center;
+            color: rgba(255, 244, 202, 0.2);
+            svg {
+                font-size: 300px;
+            }
+        }
+
+        &-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+            padding: 10px;
+        }
+    }
+
+    .GamePlayerStatistic {
+        position: absolute;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        &-self {
+            bottom: 0;
+            transform: translateY(-180%);
+        }
+
+        &:not(&-self) {
+            top: 0;
+            transform: translateY(50%);
+        }
+    }
+}
+
+.GameHand {
+    width: 100%;
+    display: flex;
+    position: relative;
+    gap: 8px;
+
+    &-slot {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: var(--card-width);
+        min-height: var(--card-height);
+        padding: 3px 6px;
+        outline: rgba(36, 255, 229, 0.4) 2px solid;
+        border-radius: 12px;
+        justify-content: center;
+        align-items: center;
+
+        &:has(.Card-active) {
+            > * {
+                > * {
+                    transform: translateZ(150px);
+                }
+            }
+        }
+    }
+
+    &Message {
+        --pulse-offset-end: 8px;
+        --pulse-offset-start: 0;
+        display: flex;
+        position: absolute;
+        align-items: center;
+        font-size: 50px;
+        text-align: center;
+        background-color: rgba(195, 195, 195, 0.5);
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        outline: 1px solid #c1c1c1;
+
+        animation: pulse 1s infinite;
+    }
+
+    &-self {
+        order: 99;
+    }
+}
+
+.CardDrawn {
+    flex-shrink: 0;
+    position: relative;
+    perspective: var(--perspective);
+    min-width: var(--card-width);
+    min-height: var(--card-height);
+    padding: 5px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    outline: 4px #ffe1ab solid;
+    outline-offset: 1px;
+    border-radius: 12px;
+
+    &-self {
+        order: 5;
+    }
+
+    &-card-wrapper {
+        position: absolute;
+        --x-step: 1px;
+        --y-step: -2px;
+        --z-step: 1px;
+
+        @for $i from 1 through 20 {
+            &:nth-of-type(#{$i}) {
+                transform: translateZ(calc(var(--z-step) * ($i - 1)))
+                    translateY(calc(var(--y-step) * ($i - 1)))
+                    translateX(calc(var(--x-step) * ($i - 1)));
+                z-index: $i;
+            }
+        }
+    }
+
+    &:not(&-self) {
+        order: -1;
+        .CardDrawn-card-wrapper {
+            --x-step: -1px;
+        }
+    }
+}
+
+.GameCurrentPhase {
+    position: absolute;
+    top: 50%;
+    text-align: center;
+    font-size: 20px;
+    transform: translateY(-50%);
+
+    &-invitation-code {
+        font-size: 28px;
+    }
+
+    b {
+        font-weight: bold;
+        font-size: 28px;
+    }
+}
+
+@keyframes attackerHit {
+    0% {
+        transform: translateX(0);
+    }
+    75% {
+        transform: translateX(var(--attacker-left-step));
+    }
+    85% {
+        transform: translateX(var(--attacker-left-step));
+    }
+    95% {
+        transform: translateX(calc(var(--attacker-right-step) + 5px));
+    }
+    100% {
+        transform: translateX(var(--attacker-right-step));
+    }
+}
+
+@keyframes defenderHit {
+    0% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(var(--defender-right-step));
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+.WinnerAnimation,
+.PreviousTurnAnimation {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: rgba(12, 23, 44, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 1s;
+}
+
+.PreviousTurnAnimation {
+    &-hiding {
+        opacity: 0;
+    }
+
+    &-cards {
+        display: flex;
+        gap: 20px;
+
+        &-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+    }
+
+    &-icon {
+        --icon-size: 50px;
+        flex: 1;
+        color: white;
+        display: flex;
+        align-items: center;
+        transition: color 0.5s;
+
+        svg {
+            transition: font-size 0.5s;
+            font-size: var(--icon-size);
+        }
+
+        &-winner {
+            --icon-size: 65px;
+            color: #ffee86;
+            animation: pulse 0.5s;
+            animation-iteration-count: 3;
+            outline: 1px solid #ffee86;
+            border-radius: 50%;
+            --pulse-offset-start: 3px;
+            --pulse-offset-end: 8px;
+        }
+
+        &-loser {
+            --icon-size: 35px;
+            color: #808991;
+        }
+    }
+
+    &-attacker {
+        --attacker-left-step: -60px;
+        --attacker-right-step: 30px;
+        animation: attackerHit 1.5s;
+    }
+
+    &-defender {
+        --defender-right-step: 10px;
+        animation: defenderHit 0.5s;
+        animation-delay: 1.3s;
+
+        &-empty {
+            border: 1px solid white;
+            width: var(--card-width);
+            height: var(--card-height);
+            border-radius: 8px;
+        }
+    }
+}
+
+.WinnerAnimation {
+    color: white;
+
+    &-winner-animation {
+        transition-delay: 1s !important;
+    }
+
+    // Source https://codepen.io/amardeeprai/pen/YzNLEav
+
+    @keyframes bounceInLeft {
+        0%,
+        60%,
+        75%,
+        90%,
+        100% {
+            animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        0% {
+            opacity: 0;
+            transform: translate(-3000px, 0);
+        }
+
+        75% {
+            opacity: 1;
+            transform: translate(20px, 0);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translate(0, 0);
+        }
+    }
+
+    @keyframes wheelSpin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(640deg);
+        }
+    }
+
+    [class|="confetti"] {
+        position: absolute;
+    }
+
+    /* Config */
+    $elementCount: 50;
+    $colors: (#03a561, #00a4ff, #f04813, #ff04d2, #fed500);
+    $shapes: (0, 1, 2);
+
+    @for $i from 0 through $elementCount {
+        $w: random(18);
+        $l: random(175);
+
+        .confetti-left-#{$i},
+        .confetti-right-#{$i} {
+            $shape: nth($shapes, random(3));
+            $color: nth($colors, random(5));
+            @if ($shape==0) {
+                width: #{$w * 0.6}px;
+                height: #{$w * 0.6}px;
+                border-radius: 50%;
+                overflow: hidden;
+                background-color: $color;
+            }
+            @elseif ($shape==1) {
+                background-color: transparent;
+                border-bottom: unquote(($w * 0.5) + "px solid " + $color);
+                border-left: unquote(($w * 0.5) / 2 + "px solid transparent");
+                border-right: unquote(($w * 0.5) / 2 + "px solid transparent");
+                height: 0;
+                width: #{$w * 0.5}px;
+            } @else {
+                width: #{$w}px;
+                height: #{$w * 0.4}px;
+                background-color: $color;
+            }
+            top: calc(25% - #{$w}px);
+            left: calc(50% - #{$w * 0.3}px);
+            opacity: 0;
+            transform: translate(0px, 0px) rotate(0deg);
+        }
+        .confetti-left-#{$i} {
+            animation: drop-left-#{$i}
+                unquote(1 + random() + "s")
+                unquote(0.45 + random() + "s")
+                forwards;
+        }
+        .confetti-right-#{$i} {
+            animation: drop-right-#{$i}
+                unquote(1 + random() + "s")
+                unquote(0.45 + random() + "s")
+                forwards;
+        }
+        @keyframes drop-left-#{$i} {
+            $rot: random(360);
+            $val: random(10) / 4;
+            $opacity: random() + 0.5;
+            0.0000% {
+                transform: translate(#{$val * 0}px, #{$val * 0}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            10.7882% {
+                transform: translate(#{$val * 12.6}px, -#{$val * 30}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            21.2266% {
+                transform: translate(#{$val * 28}px, -#{$val * 57.6}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            30.4208% {
+                transform: translate(#{$val * 46.1}px, -#{$val * 78.7}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            34.4519% {
+                transform: translate(#{$val * 56.2}px, -#{$val * 85.6}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            38.2085% {
+                transform: translate(#{$val * 66.9}px, -#{$val * 89.4}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            41.9607% {
+                transform: translate(#{$val * 78.2}px, -#{$val * 89.6}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+
+            46.1202% {
+                transform: translate(#{$val * 90.2}px, -#{$val * 85.8}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+
+            51.1287% {
+                transform: translate(#{$val * 102.8}px, -#{$val * 77.4}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+
+            57.3654% {
+                transform: translate(#{$val * 116}px, -#{$val * 64}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+
+            65.1344% {
+                transform: translate(#{$val * 129.9}px, -#{$val * 45}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+
+            74.6872% {
+                transform: translate(#{$val * 144.3}px, -#{$val * 20}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+
+            86.2425% {
+                transform: translate(#{$val * 159.4}px, #{$val * 11.5}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity * 0.5;
+            }
+
+            100.0000% {
+                transform: translate(#{$val * 175}px, #{$val * 50}px)
+                    rotate(#{$rot}deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes drop-right-#{$i} {
+            $rot: random(360);
+            $val: random(10) / 4;
+            $opacity: random() + 0.5;
+            0.0000% {
+                transform: translate(#{$val * 0}px, #{$val * 0}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            10.7882% {
+                transform: translate(-#{$val * 12.6}px, -#{$val * 30}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            21.2266% {
+                transform: translate(-#{$val * 28}px, -#{$val * 57.6}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            30.4208% {
+                transform: translate(-#{$val * 46.1}px, -#{$val * 78.7}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            34.4519% {
+                transform: translate(-#{$val * 56.2}px, -#{$val * 85.6}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            38.2085% {
+                transform: translate(-#{$val * 66.9}px, -#{$val * 89.4}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            41.9607% {
+                transform: translate(-#{$val * 78.2}px, -#{$val * 89.6}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            46.1202% {
+                transform: translate(-#{$val * 90.2}px, -#{$val * 85.8}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            51.1287% {
+                transform: translate(-#{$val * 102.8}px, -#{$val * 77.4}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            57.3654% {
+                transform: translate(-#{$val * 116}px, -#{$val * 64}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            65.1344% {
+                transform: translate(-#{$val * 129.9}px, -#{$val * 45}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            74.6872% {
+                transform: translate(-#{$val * 144.3}px, -#{$val * 20}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity;
+            }
+            86.2425% {
+                transform: translate(-#{$val * 159.4}px, #{$val * 11.5}px)
+                    rotate(#{$rot}deg);
+                opacity: $opacity * 0.5;
+            }
+            100.0000% {
+                transform: translate(-#{$val * 175}px, #{$val * 50}px)
+                    rotate(#{$rot}deg);
+                opacity: 0;
+            }
+        }
+    }
+
+    .confetti {
+        position: relative;
+        margin: 0 auto;
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 114px;
+        &__wrapper {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+        }
+    }
+
+    .banner {
+        margin: 0 auto;
+        text-align: center;
+        padding: 16px;
+        position: relative;
+        z-index: 2;
+    }
+}

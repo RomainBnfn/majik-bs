@@ -1,0 +1,33 @@
+.CardPowerIcon {
+    --power-icon-size: 35px;
+
+    background: no-repeat center
+        url("https://static.wikia.nocookie.net/brawlstarsconception/images/2/2f/SP-Blank.png/revision/latest?cb=20220602100649");
+    width: var(--power-icon-size);
+    height: var(--power-icon-size);
+    background-size: 100%;
+    margin: -8px -4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    svg {
+        transform: translateY(-13%);
+        font-size: 15px;
+        color: #f8a123;
+    }
+}
+
+.CardPowerDescription {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &-title {
+        margin: 0;
+    }
+
+    &-tooltip {
+        margin: 0 !important;
+    }
+}

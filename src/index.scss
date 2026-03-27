@@ -1,0 +1,121 @@
+html,
+body,
+#root {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+
+@font-face {
+    font-family: "LondrinaShadow";
+    src: url("/src/assets/fonts/LondrinaShadow-Regular.ttf");
+}
+
+a {
+    color: unset;
+    text-decoration: none;
+}
+
+@keyframes pulse {
+    0% {
+        outline-offset: var(--pulse-offset-start);
+        outline-width: 4px;
+    }
+
+    60% {
+        outline-offset: var(--pulse-offset-end);
+        outline-width: 0;
+    }
+    80% {
+        outline-offset: var(--pulse-offset-end);
+        outline-width: 0;
+    }
+    100% {
+        outline-offset: var(--pulse-offset-start);
+        outline-width: 4px;
+    }
+}
+
+@keyframes wiggle {
+    0% {
+        transform: rotate(0deg) rotateY(0deg);
+    }
+    20% {
+        transform: rotate(5deg) rotateY(30deg);
+    }
+    40% {
+        transform: rotate(-5deg) rotateY(0deg);
+    }
+    60% {
+        transform: rotate(5deg) rotateY(-30deg);
+    }
+    80% {
+        transform: rotate(-5deg) rotateY(0deg);
+    }
+    100% {
+        transform: rotate(0deg) rotateY(0deg);
+    }
+}
+
+#root {
+    --pulse-offset-start: -5px;
+    --pulse-offset-end: 3px;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+
+    --card-width: 100px;
+    --card-height: 150px;
+
+    --color-text: #2a2a2c;
+    --color-text-light: #f5f5f5;
+
+    color: var(--color-text);
+
+    --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+    --heading: system-ui, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, Consolas, monospace;
+
+    font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    text-rendering: optimizeLegibility;
+
+    /* Not selectable text */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.App {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &-content {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    h1 {
+        margin: 5px 0 10px;
+    }
+
+    p,
+    h2 {
+        margin: 0;
+    }
+}
+
+.Navbar {
+    margin-bottom: 20px;
+}

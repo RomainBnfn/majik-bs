@@ -1,0 +1,129 @@
+import { GameContext } from "./gameContext.tsx";
+import {
+    type FirebaseGameModel,
+    type GameModel,
+} from "../../../models/game.model.ts";
+import { fromObjectToList } from "../../../utils/firebase.utils.ts";
+import { useParams } from "react-router";
+import { useFirebaseValues } from "../../../hooks/useFirebaseValues.ts";
+import { FIREBASE_PATHS } from "../../../constants/firebasePaths.ts";
+import { type CardModel } from "../../../models/card.model.ts";
+import { useAuth } from "../../../globalContexts/AuthGlobalContext/AuthGlobalContext.tsx";
+import { TurnPhaseTypes } from "../../../enums/TurnPhaseType.enum.ts";
+import { attackWithCard, defense } from "../../../services/game.service.ts";
+import { useCards } from "../../../globalContexts/CardGlobalContext/CardGlobalContext.tsx";
+import { useEffect, useState } from "react";
+import type { PreviousTurn } from "../../../models/previousTurn.model.ts";
+import { useGameSettingCards } from "../../../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
+import { getPlayer } from "../../../utils/game.utils.ts";
+
+export const transformGameResponse = (
+    v: FirebaseGameModel,
+    id: string,
+): GameModel => ({
+    ...v,
+    _id: id,
+    players: fromObjectToList(v.players).map(
+        (p): GameModel => ({
+            ...p,
+            deckCardIds: valuesIfExists(p?.deckCardIds),
+            discardCardIds: valuesIfExists(p?.discardCardIds),
+            inHandCardIds: valuesIfExists(p?.inHandCardIds),
+        }),
+    ),
+    previousTurns: fromObjectToList(v.previousTurns),
+});
+
+const valuesIfExists = (o): string[] =>
+    o ? Object.values(o ?? {}).map(String) : [];
+
+const GameContextProvider = ({ children }) => {
+    const { id } = useParams();
+    const { getCardById } = useCards();
+    const { user } = useAuth();
+    const gameSettings = useGameSettingCards();
+    const [knownTurns, setKnownTurns] = useState<PreviousTurn[] | undefined>();
+    const [gameState] = useFirebaseValues<GameModel, FirebaseGameModel>(
+        `${FIREBASE_PATHS.games}/${id}`,
+        {} as GameModel,
+        (v) => transformGameResponse(v, id),
+    );
+
+    useEffect(() => {
+        if (!knownTurns && gameState.previousTurns) {
+            setKnownTurns(gameState.previousTurns);
+        }
+    }, [knownTurns, gameState.previousTurns]);
+
+    const isLoggedPlayerTurn = gameState.currentPlayerId == user?.uid;
+
+    const shouldSelectCard =
+        !gameState.winnerPlayerId &&
+        ((isLoggedPlayerTurn &&
+            gameState.currentPhase === TurnPhaseTypes.Attack) ||
+            (!isLoggedPlayerTurn &&
+                gameState.currentPhase === TurnPhaseTypes.Defense));
+
+    const hasStarted =
+        !gameState.winnerPlayerId && gameState.players?.length === 2;
+
+    const onClickOnCard = (c: CardModel) => {
+        if (!shouldSelectCard || !user) {
+            return;
+        }
+        if (isLoggedPlayerTurn) {
+            return attackWithCard(gameState, c, {
+                settings: gameSettings,
+                game: gameState,
+                player: getPlayer(gameState, user.uid),
+            });
+        }
+        const attackingCard = gameState.currentSelectedCardId
+            ? getCardById(gameState.currentSelectedCardId)
+            : undefined;
+        if (!attackingCard) {
+            return;
+        }
+        return defense(gameState, c, attackingCard);
+    };
+
+    const onSkipDefense = () => {
+        if (
+            !shouldSelectCard ||
+            gameState.currentPhase !== TurnPhaseTypes.Defense
+        ) {
+            return;
+        }
+        const attackingCard = gameState.currentSelectedCardId
+            ? getCardById(gameState.currentSelectedCardId)
+            : undefined;
+        if (!attackingCard) {
+            return;
+        }
+        return defense(gameState, undefined, attackingCard);
+    };
+
+    return (
+        <GameContext.Provider
+            value={{
+                game: gameState,
+                onClickOnCard,
+                onSkipDefense,
+                isLoggedPlayerTurn,
+                shouldSelectCard,
+                hasStarted,
+                nonPlayedPreviousTurn:
+                    gameState.previousTurns?.filter(
+                        (p) => !knownTurns?.some((t) => t._id === p._id),
+                    ) ?? [],
+                seenPlayedTurn(turn: PreviousTurn) {
+                    setKnownTurns((p) => [...p, turn]);
+                },
+            }}
+        >
+            {children}
+        </GameContext.Provider>
+    );
+};
+
+export default GameContextProvider;

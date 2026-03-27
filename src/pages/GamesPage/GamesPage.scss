@@ -1,0 +1,39 @@
+.DeckSelected {
+    background-color: aqua;
+}
+
+.GamesPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+    margin: 0 10px;
+    gap: 10px;
+
+    &-games,
+    &-decks {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        width: 100%;
+
+        &-list {
+            display: flex;
+            flex: 1;
+            overflow-x: auto;
+            gap: 8px;
+            padding: 8px;
+
+            > * {
+                flex-shrink: 0;
+            }
+        }
+    }
+}
+
+.Invitation-field {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
