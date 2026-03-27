@@ -16,7 +16,9 @@ import { transformGameResponse } from "../GamePage/contexts/GameContextProvider.
 import { useDecks } from "../../globalContexts/DeckGlobalContext/DeckGlobalContext.tsx";
 import { useGetIsDeckValid } from "../../utils/card.utils.ts";
 import DeckPreview from "../../components/DeckPreview/DeckPreview.tsx";
+import { useLocalStorageState } from "../../hooks/useLocalStorageState.ts";
 
+const SELECTED_DECK_PATH = "selectedDeck";
 const GamesPage = () => {
     const { user } = useAuth();
     const { maxHealth } = useGameSettingCards();
@@ -25,17 +27,27 @@ const GamesPage = () => {
     const { userDecks } = useDecks();
     const isValid = useGetIsDeckValid();
     const validDecks = userDecks.filter(isValid);
-    const [selectedDeckId, setSelectedDeckId] = useState<string | undefined>(
-        validDecks[0]?._id,
-    );
+    const [selectedDeckId, setSelectedDeckId] = useLocalStorageState<
+        string | undefined
+    >(SELECTED_DECK_PATH, validDecks[0]?._id);
+
     const navigate = useNavigate();
     const nonTerminatedGames = games.filter((g) => !g.winnerPlayerId);
+
+    useEffect(() => {
+        if (
+            selectedDeckId &&
+            !validDecks.some((d) => d._id == selectedDeckId)
+        ) {
+            setSelectedDeckId(validDecks[0]?._id);
+        }
+    }, [selectedDeckId, setSelectedDeckId, validDecks]);
 
     useEffect(() => {
         if (!selectedDeckId && validDecks.length) {
             setSelectedDeckId(validDecks[0]._id);
         }
-    }, [selectedDeckId, validDecks]);
+    }, [selectedDeckId, setSelectedDeckId, validDecks]);
 
     useEffect(() => {
         if (!user) {
