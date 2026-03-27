@@ -10,6 +10,7 @@ import {
     getFirebaseRef,
     getFirebaseValue,
     pushFirebaseValue,
+    removeFirebaseElement,
     updateFirebaseValue,
 } from "./firebase.service.ts";
 import { FIREBASE_PATHS } from "../constants/firebasePaths.ts";
@@ -49,6 +50,10 @@ export const attackWithCard = (
             .updates,
     };
     return updateFirebaseValue(`${FIREBASE_PATHS.games}/${game._id}`, updates);
+};
+
+export const deleteGame = (id: string) => {
+    return removeFirebaseElement(`${FIREBASE_PATHS.games}/${id}`);
 };
 
 export const defense = async (
@@ -156,7 +161,7 @@ export const defense = async (
     await startPlayerTurn(
         transformGameResponse(updatedGame.val(), game._id),
         defId,
-        (!!card ? 1 : 2) +
+        (card ? 1 : 2) +
             defPowerResults.reduce((p, r) => p + (r.toDraw ?? 0), 0),
     );
 };

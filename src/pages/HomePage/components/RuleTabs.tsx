@@ -7,6 +7,8 @@ import {
     Shield,
     Whatshot,
 } from "@mui/icons-material";
+import { Button } from "@mui/material";
+import { Link } from "react-router";
 
 const ShellyCard = "16000000";
 export const Rule1 = () => {
@@ -126,6 +128,11 @@ export const Rule4 = () => {
                     tour, il pioche un robot (1/0)
                 </li>
             </ul>
+
+            <h2>C'est parti !</h2>
+            <Link to={"/decks"}>
+                <Button>Créer un deck !</Button>
+            </Link>
         </>
     );
 };

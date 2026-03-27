@@ -1,6 +1,10 @@
 import "./GamesPage.scss";
-import { Link, Navigate, useNavigate } from "react-router";
-import { createGame, getAllPlayerGames, joinGame } from "../../services/game.service.ts";
+import { Navigate, useNavigate } from "react-router";
+import {
+    createGame,
+    getAllPlayerGames,
+    joinGame,
+} from "../../services/game.service.ts";
 import { useAuth } from "../../globalContexts/AuthGlobalContext/AuthGlobalContext.tsx";
 import { useGameSettingCards } from "../../globalContexts/GameSettingGlobalContext/GameSettingGlobalContext.tsx";
 import { useEffect, useState } from "react";
@@ -13,6 +17,7 @@ import { useDecks } from "../../globalContexts/DeckGlobalContext/DeckGlobalConte
 import { useGetIsDeckValid } from "../../utils/card.utils.ts";
 import DeckPreview from "../../components/DeckPreview/DeckPreview.tsx";
 import { useLocalStorageState } from "../../hooks/useLocalStorageState.ts";
+import GamePreview from "../../components/GamePreview/GamePreview.tsx";
 
 const SELECTED_DECK_PATH = "selectedDeck";
 const GamesPage = () => {
@@ -147,11 +152,7 @@ const GamesPage = () => {
                     <p>Reprendre une ancienne partie non terminée</p>
                     <div className={"GamesPage-games-list"}>
                         {nonTerminatedGames.map((g) => (
-                            <div>
-                                <Link to={`/game/${g._id}`}>
-                                    Game {g.invitationCode}
-                                </Link>
-                            </div>
+                            <GamePreview game={g} />
                         ))}
                     </div>
                 </div>

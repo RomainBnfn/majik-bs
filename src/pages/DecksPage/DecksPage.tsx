@@ -10,6 +10,7 @@ import {
 } from "../../services/firebase.service.ts";
 import { useAuth } from "../../globalContexts/AuthGlobalContext/AuthGlobalContext.tsx";
 import { useDecks } from "../../globalContexts/DeckGlobalContext/DeckGlobalContext.tsx";
+import { getRandomStringCode } from "../../utils/random.utils.ts";
 
 const DecksPage = () => {
     const { user, isLogged } = useAuth();
@@ -25,7 +26,7 @@ const DecksPage = () => {
                 onClick={() => {
                     pushFirebaseValue(FIREBASE_PATHS.decks, {
                         ownerId: user?.uid,
-                        name: "Nouveau",
+                        name: getRandomStringCode(6),
                         cardIds: "",
                     }).then((r) => {
                         navigate(`/deck/${r.key}`);
