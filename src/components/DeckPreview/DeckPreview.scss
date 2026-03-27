@@ -1,16 +1,57 @@
 .DeckPreview {
-    height: 50px;
+    --deck-preview-width: 150px;
+    --deck-preview-card-scale: 4;
+    --deck-preview-background-color: #f3f6f6;
+    --deck-preview-cards-background-color: #dadfe1;
+
+    width: var(--deck-preview-width);
     display: flex;
+    flex-direction: column;
     align-items: center;
+    background-color: var(--deck-preview-background-color) !important;
+    padding: 10px 5px !important;
+
+    &-cards {
+        overflow: hidden;
+        height: 75px;
+        border-radius: 4px;
+        background-color: var(--deck-preview-cards-background-color);
+        margin: 5px !important;
+        width: 100%;
+
+        &-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            width: calc(
+                var(--deck-preview-card-scale) * var(--deck-preview-width)
+            );
+            transform: scale(calc(1 / var(--deck-preview-card-scale)));
+            transform-origin: top left;
+            padding: calc(var(--deck-preview-card-scale) * 4px) 0;
+        }
+
+        &-card {
+        }
+    }
 
     &-name {
-        width: 60px;
+        font-weight: bold;
+    }
+
+    &-actions {
+        display: flex;
+        align-items: center;
     }
 
     &-active {
         border: 1px aqua solid !important;
+        --deck-preview-background-color: #afe8e5;
+        --deck-preview-cards-background-color: #f7fbfb;
     }
     &-invalid {
         border: 1px red solid !important;
+        --deck-preview-background-color: #e8beaf;
     }
 }

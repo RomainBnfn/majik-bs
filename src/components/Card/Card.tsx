@@ -1,18 +1,14 @@
 import "./Card.scss";
 import type { CardModel } from "../../models/card.model.ts";
 import RoundStatistic from "../RoundStatistic/RoundStatistic.tsx";
-import {
-    Adjust,
-    RadioButtonChecked,
-    Shield,
-    Whatshot,
-} from "@mui/icons-material";
+import { Adjust, RadioButtonChecked, Shield, Whatshot } from "@mui/icons-material";
 import classNames from "classnames";
 import CardPowerIcon from "../CardPowerIcon/CardPowerIcon.tsx";
 
 export type CardProps = {
     card: CardModel;
     compact?: boolean;
+    hideStatistics?: boolean;
     active?: boolean;
     toSelect?: boolean;
     disabled?: boolean;
@@ -26,6 +22,7 @@ export type CardProps = {
 const Card = ({
     card,
     compact,
+    hideStatistics,
     onClick,
     active,
     toSelect,
@@ -40,6 +37,7 @@ const Card = ({
             className={classNames(
                 "Card",
                 compact && "Card-compact",
+                hideStatistics && "Card-hideStatistics",
                 active && "Card-active",
                 reverse && "Card-reverse",
                 toSelect && "Card-toSelect",
@@ -68,28 +66,30 @@ const Card = ({
                             <CardPowerIcon power={p} />
                         ))}
                     </div>
-                    <div className={"Card-footer"}>
-                        <RoundStatistic
-                            className={classNames(
-                                "Card-footer-statistic",
-                                highlightMode === "attack" &&
-                                    "Card-footer-statistic-highlighted",
-                            )}
-                            value={card.attack}
-                            type={"attack"}
-                            icon={<Whatshot />}
-                        />
-                        <RoundStatistic
-                            className={classNames(
-                                "Card-footer-statistic",
-                                highlightMode === "defense" &&
-                                    "Card-footer-statistic-highlighted",
-                            )}
-                            value={card.defense}
-                            type={"defense"}
-                            icon={<Shield />}
-                        />
-                    </div>
+                    {
+                        <div className={"Card-footer"}>
+                            <RoundStatistic
+                                className={classNames(
+                                    "Card-footer-statistic",
+                                    highlightMode === "attack" &&
+                                        "Card-footer-statistic-highlighted",
+                                )}
+                                value={card.attack}
+                                type={"attack"}
+                                icon={<Whatshot />}
+                            />
+                            <RoundStatistic
+                                className={classNames(
+                                    "Card-footer-statistic",
+                                    highlightMode === "defense" &&
+                                        "Card-footer-statistic-highlighted",
+                                )}
+                                value={card.defense}
+                                type={"defense"}
+                                icon={<Shield />}
+                            />
+                        </div>
+                    }
                 </div>
                 <div className={"Card-back"}>
                     <Adjust />

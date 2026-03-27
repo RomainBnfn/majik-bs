@@ -114,6 +114,14 @@
         --card-back-logo-size: 50px;
     }
 
+    &-hideStatistics {
+        --card-height: 120px;
+
+        .Card-footer {
+            display: none;
+        }
+    }
+
     &-active {
         --card-outline-color: #2beacf;
         --card-outline-width: 5px;
